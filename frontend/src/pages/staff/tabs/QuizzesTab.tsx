@@ -7,6 +7,7 @@ import {
   Trash2, X, Save, PlusCircle, Settings, UserCheck
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface QuizAttempt {
   id: number;
@@ -437,7 +438,7 @@ export const QuizzesTab: React.FC = () => {
                           </span>
                         </td>
                         <td className="py-3.5 px-4 font-medium text-muted-foreground">
-                          {new Date(att.completed_at).toLocaleString()}
+                          {formatDisplayDateTime(att.completed_at)}
                         </td>
                         <td className="py-3.5 px-4 text-right">
                           <button
@@ -633,7 +634,7 @@ export const QuizzesTab: React.FC = () => {
                 <div className="sm:col-span-3 grid gap-3 sm:grid-cols-4 items-end">
                   <div className="sm:col-span-2">
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Quiz Title *</label>
-                    <input type="text" value={quizTitle} onChange={(e) => setQuizTitle(e.target.value)} placeholder="Checkpoint Quiz Title" className="w-full h-10 px-3 bg-card border border-border rounded-xl font-semibold" />
+                    <input type="text" value={quizTitle} onChange={(e) => setQuizTitle(e.target.value)} placeholder="Enter quiz title" className="w-full h-10 px-3 bg-card border border-border rounded-xl font-semibold" />
                   </div>
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Min Correct Answers *</label>
@@ -763,7 +764,7 @@ export const QuizzesTab: React.FC = () => {
                     </h5>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Question Prompt *</label>
-                      <input type="text" value={qText} onChange={(e) => setQText(e.target.value)} placeholder="e.g. What is Django?" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
+                      <input type="text" value={qText} onChange={(e) => setQText(e.target.value)} placeholder="Enter question prompt" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
                     </div>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Question Type</label>
@@ -776,7 +777,7 @@ export const QuizzesTab: React.FC = () => {
                     {qType !== 'TF' && (
                       <div>
                         <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Options (Comma separated) *</label>
-                        <input type="text" value={qOptions} onChange={(e) => setQOptions(e.target.value)} placeholder="A, B, C, D" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
+                        <input type="text" value={qOptions} onChange={(e) => setQOptions(e.target.value)} placeholder="Enter options (comma separated)" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
                       </div>
                     )}
                     {qType === 'TF' ? (
@@ -791,7 +792,7 @@ export const QuizzesTab: React.FC = () => {
                     ) : (
                       <div>
                         <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Correct Option Match *</label>
-                        <input type="text" value={qCorrect} onChange={(e) => setQCorrect(e.target.value)} placeholder="e.g. A" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
+                        <input type="text" value={qCorrect} onChange={(e) => setQCorrect(e.target.value)} placeholder="Enter correct option match" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
                       </div>
                     )}
                     <button onClick={handleAddQuestion} className="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/25 font-bold rounded-lg flex items-center justify-center gap-1">

@@ -376,7 +376,7 @@ export const ApexAITutorCore: React.FC<ApexAITutorCoreProps> = ({
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}
-            placeholder={isListening ? 'Listening...' : 'Type your doubt or question here...'}
+            placeholder={isListening ? 'Listening...' : 'Enter your doubt or question here'}
             className="flex-1 bg-transparent text-[11px] outline-none placeholder:text-muted-foreground/70 px-1"
             disabled={tutorMutation.isPending}
           />

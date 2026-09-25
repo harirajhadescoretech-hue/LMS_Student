@@ -60,22 +60,22 @@ export const StudentCyberHeader: React.FC<StudentCyberHeaderProps> = ({ onToggle
   }, []);
 
   return (
-    <header className="w-full h-14 flex items-center justify-between gap-3 px-1 py-1 mb-3 dark">
+    <header className="w-full h-14 flex items-center justify-between gap-3 px-3 py-1 mb-4 bg-white/95 border border-[#e2eded] rounded-2xl shadow-sm text-slate-800 backdrop-blur-md relative" style={{ zIndex: 40, overflow: 'visible' }}>
       {/* Mobile Toggle & Search Bar */}
       <div className="flex items-center gap-2 flex-1 max-w-xl">
         <button
           onClick={onToggleSidebar}
-          className="lg:hidden p-2 rounded-2xl cyber-glass-pill text-emerald-400 hover:text-white"
+          className="lg:hidden p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-teal-700 transition-colors"
         >
           <Menu size={18} />
         </button>
 
         <div className="relative w-full">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400" size={16} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
           <input
             type="text"
             placeholder="Search courses, topics, or skills..."
-            className="w-full h-10 pl-10 pr-4 bg-slate-950/90 border border-emerald-500/40 rounded-2xl outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 text-xs text-white placeholder:text-slate-400 font-medium transition-all backdrop-blur-2xl shadow-inner"
+            className="w-full h-10 pl-10 pr-4 bg-[#f0f4f8] hover:bg-[#ebf0f6] focus:bg-white border border-slate-200/70 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/15 rounded-full outline-none text-xs text-slate-800 placeholder:text-slate-400 font-medium transition-all"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 navigate('/student/courses');
@@ -93,33 +93,27 @@ export const StudentCyberHeader: React.FC<StudentCyberHeaderProps> = ({ onToggle
           title="Click to toggle Course/Live Mode"
           className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer ${
             isStudentLive 
-              ? 'bg-slate-950/80 border-emerald-500/30 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-              : 'bg-slate-950/80 border-teal-500/30 text-teal-400 shadow-[0_0_10px_rgba(20,184,166,0.2)]'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+              : 'bg-teal-50 border-teal-200 text-teal-700'
           }`}
         >
           {isStudentLive ? (
             <>
-              <Wifi size={13} className="text-emerald-400 animate-pulse" />
-              <span className="text-[10px] text-emerald-300 font-extrabold tracking-wide">Live Mode</span>
+              <Wifi size={13} className="text-emerald-600 animate-pulse" />
+              <span className="text-[10px] text-emerald-800 font-extrabold tracking-wide">Live Mode</span>
             </>
           ) : (
             <>
-              <BookOpen size={13} className="text-teal-400" />
-              <span className="text-[10px] text-teal-300 font-extrabold tracking-wide">Course Mode</span>
+              <BookOpen size={13} className="text-teal-600" />
+              <span className="text-[10px] text-teal-800 font-extrabold tracking-wide">Course Mode</span>
             </>
           )}
         </button>
 
         {/* Live Clock */}
-        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 border border-emerald-500/30 text-slate-200 text-xs font-mono font-bold shadow-[0_0_10px_rgba(16,185,129,0.15)]">
-          <Clock size={13} className="text-emerald-400" />
+        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-xs font-mono font-bold">
+          <Clock size={13} className="text-teal-600" />
           <span>{currentTime || '9:41 AM'}</span>
-        </div>
-
-        {/* Weather Indicator */}
-        <div className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/80 border border-emerald-500/30 text-slate-200 text-xs font-bold shadow-[0_0_10px_rgba(16,185,129,0.15)]">
-          <Sun size={13} className="text-amber-400" />
-          <span>22°C</span>
         </div>
 
         {/* Notification Bell */}
@@ -131,12 +125,10 @@ export const StudentCyberHeader: React.FC<StudentCyberHeaderProps> = ({ onToggle
           className="relative cursor-pointer group"
           title="My Profile"
         >
-          <div className="h-9 w-9 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-600 p-0.5 shadow-[0_0_12px_rgba(16,185,129,0.4)] group-hover:scale-105 transition-transform">
-            <div className="h-full w-full rounded-[14px] bg-slate-950 flex items-center justify-center text-emerald-300 font-extrabold text-xs">
-              {getInitials(user?.name || user?.first_name, 'ST')}
-            </div>
+          <div className="h-9 w-9 rounded-full bg-[#009e86] flex items-center justify-center text-white font-bold text-xs shadow-sm group-hover:scale-105 transition-transform">
+            {getInitials(user?.name || user?.first_name, 'ST')}
           </div>
-          <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 border-2 border-slate-950 rounded-full shadow-[0_0_6px_#34d399]" />
+          <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
         </div>
       </div>
     </header>

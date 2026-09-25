@@ -30,18 +30,59 @@ class CourseSerializer(serializers.ModelSerializer):
         if isinstance(data, dict):
             data = data.copy()
             category_val = data.get('category')
-            if not category_val or category_val == '':
-                from apps.categories.models import Category
-                is_track = str(data.get('is_mentoring_track', '')).lower() in ['true', '1']
-                cat_type = 'LIVE' if is_track else 'COURSE'
-                first_cat = Category.objects.filter(category_type=cat_type).first() or Category.objects.first()
+            from typing import Any
+            from apps.categories.models import Category
+            cat_mgr: Any = getattr(Category, 'objects', None)
+            is_track = str(data.get('is_mentoring_track', '')).lower() in ['true', '1']
+            cat_type = 'LIVE' if is_track else 'COURSE'
+
+            if not category_val or category_val == '' or category_val == 0 or category_val == '0':
+                first_cat = cat_mgr.filter(category_type=cat_type).first() or cat_mgr.first()
                 if not first_cat:
-                    first_cat = Category.objects.create(name='General', slug='general', category_type=cat_type)
-                data['category'] = first_cat.id
-            if not data.get('slug') and data.get('title'):
-                import re, time
-                clean_slug = re.sub(r'[^a-z0-9]+', '-', str(data['title']).lower()).strip('-')
-                data['slug'] = clean_slug if clean_slug else f"course-{int(time.time())}"
+                    first_cat = cat_mgr.create(name='General Mentoring' if is_track else 'General', slug='general-mentoring' if is_track else 'general', category_type=cat_type)
+                data['category'] = getattr(first_cat, 'id', None)
+            else:
+                try:
+                    cat_id = int(category_val)
+                    if not cat_mgr.filter(id=cat_id).exists():
+                        first_cat = cat_mgr.filter(category_type=cat_type).first() or cat_mgr.first()
+                        if not first_cat:
+                            first_cat = cat_mgr.create(name='General Mentoring' if is_track else 'General', slug='general-mentoring' if is_track else 'general', category_type=cat_type)
+                        data['category'] = getattr(first_cat, 'id', None)
+                    else:
+                        data['category'] = cat_id
+                except (ValueError, TypeError):
+                    first_cat = cat_mgr.filter(category_type=cat_type).first() or cat_mgr.first()
+                    data['category'] = getattr(first_cat, 'id', None)
+
+            # Always ensure a valid unique slug is computed and deduplicated
+            import re, time
+            title_str = str(data.get('title', '')).strip()
+            provided_slug = data.get('slug')
+            base_slug = ""
+            if provided_slug and str(provided_slug).strip():
+                base_slug = re.sub(r'[^a-zA-Z0-9]+', '-', str(provided_slug).strip()).strip('-').lower()
+            if not base_slug and title_str:
+                base_slug = re.sub(r'[^a-zA-Z0-9]+', '-', title_str).strip('-').lower()
+            if not base_slug:
+                base_slug = f"track-{int(time.time())}"
+
+            # Guarantee uniqueness in database
+            slug_candidate = base_slug
+            counter = 1
+            # pyrefly: ignore [missing-attribute]
+            qs = Course.objects.filter(slug=slug_candidate)
+            if self.instance:
+                qs = qs.exclude(id=self.instance.id)
+            while qs.exists():
+                slug_candidate = f"{base_slug}-{int(time.time()) % 10000}-{counter}"
+                counter += 1
+                # pyrefly: ignore [missing-attribute]
+                qs = Course.objects.filter(slug=slug_candidate)
+                if self.instance:
+                    qs = qs.exclude(id=self.instance.id)
+            data['slug'] = slug_candidate
+
         return super().to_internal_value(data)
 
     def get_mentor_name(self, obj):
@@ -83,14 +124,17 @@ class CourseSerializer(serializers.ModelSerializer):
             completed_items = comp_lessons + pass_quizzes + sub_assigns
             return round((completed_items / total_items) * 100, 1)
 
-        # pyrefly: ignore [missing-import]
+        # pyrefly: ignore [missing-import, untyped-import]
         from django.db.models import Q
         from apps.lessons.models import Lesson, LessonProgress
         from apps.quizzes.models import Quiz, QuizAttempt
         from apps.assignments.models import Assignment, AssignmentSubmission
 
+        # pyrefly: ignore [missing-attribute]
         total_lessons = Lesson.objects.filter(module__course=obj).count()
+        # pyrefly: ignore [missing-attribute]
         total_quizzes = Quiz.objects.filter(Q(module__course=obj)).count()
+        # pyrefly: ignore [missing-attribute]
         user_assignment_qs = Assignment.objects.filter(Q(course=obj) | Q(module__course=obj)).filter(Q(students__isnull=True) | Q(students=request.user))
         total_assignments = user_assignment_qs.count()
 
@@ -98,17 +142,21 @@ class CourseSerializer(serializers.ModelSerializer):
         if total_items == 0:
             return 0.0
             
+        # pyrefly: ignore [missing-attribute]
         completed_lessons = LessonProgress.objects.filter(
             student=request.user,
             lesson__module__course=obj,
             completed=True
         ).count()
 
+        # pyrefly: ignore [missing-attribute]
         passed_quizzes = QuizAttempt.objects.filter(
             student=request.user,
+            # pyrefly: ignore [missing-attribute]
             quiz__in=Quiz.objects.filter(Q(module__course=obj))
         ).values('quiz').distinct().count()
 
+        # pyrefly: ignore [missing-attribute]
         submitted_assignments = AssignmentSubmission.objects.filter(
             student=request.user,
             assignment__in=user_assignment_qs
@@ -127,6 +175,7 @@ class LiveClassSerializer(serializers.ModelSerializer):
     meeting_url = serializers.CharField(required=True)
     recording_url = serializers.URLField(required=False, allow_blank=True, allow_null=True)
     course = serializers.PrimaryKeyRelatedField(
+        # pyrefly: ignore [missing-attribute]
         queryset=Course.objects.all(),
         required=False,
         allow_null=True

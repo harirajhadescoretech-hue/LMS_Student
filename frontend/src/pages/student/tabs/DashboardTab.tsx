@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../store';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface DashboardStats {
   assigned_courses_count: number;
@@ -144,11 +145,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
           <div className="absolute -top-12 -right-12 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-md space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
               <span>Welcome back, {studentName}</span>
               <span className="text-2xl animate-bounce">👋</span>
             </h1>
-            <p className="text-xs text-slate-300/90 leading-relaxed max-w-sm">
+            <p className="text-xs text-slate-600 leading-relaxed max-w-sm">
               {liveMode 
                 ? 'Join interactive live class mentoring, review assignments, and access practical session replays.' 
                 : 'Continue your learning journey and achieve your goals with Hadescore.'}
@@ -158,9 +159,9 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
           <div className="relative z-10 pt-4">
             <button
               onClick={() => onNavigate(liveMode ? 'live' : 'courses')}
-              className="px-4 py-2 bg-slate-950/70 border border-emerald-500/40 hover:border-emerald-400 text-emerald-300 hover:text-white rounded-xl font-bold flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] active:scale-95 cursor-pointer group"
+              className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl font-bold flex items-center gap-2 transition-all shadow-md shadow-emerald-600/20 active:scale-95 cursor-pointer group"
             >
-              {liveMode ? <Radio size={14} className="text-emerald-400 animate-pulse" /> : null}
+              {liveMode ? <Radio size={14} className="text-white animate-pulse" /> : null}
               <span>{liveMode ? 'Join Live Mentoring' : 'Continue Learning'}</span>
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
@@ -229,7 +230,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
                 cy="50"
                 r="40"
                 fill="none"
-                stroke="rgba(30, 41, 59, 0.6)"
+                stroke="#e2e8f0"
                 strokeWidth="7"
               />
               {/* Animated Glowing Progress Ring */}
@@ -249,14 +250,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
 
             {/* Center Value */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-xl font-black text-white leading-none tracking-tight">{streakDays}</span>
-              <span className="text-[9px] text-slate-400 uppercase font-extrabold tracking-wider mt-0.5">days</span>
+              <span className="text-xl font-black text-slate-900 leading-none tracking-tight">{streakDays}</span>
+              <span className="text-[9px] text-slate-500 uppercase font-extrabold tracking-wider mt-0.5">days</span>
             </div>
           </div>
 
           <div className="space-y-0.5">
-            <h3 className="font-extrabold text-sm text-white">Learning Streak</h3>
-            <p className="text-[11px] text-slate-400 max-w-[200px] leading-snug">
+            <h3 className="font-extrabold text-sm text-slate-800">Learning Streak</h3>
+            <p className="text-[11px] text-slate-600 max-w-[200px] leading-snug">
               Keep it up! You're building great momentum.
             </p>
           </div>
@@ -271,14 +272,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
           onClick={() => onNavigate('courses')}
           className="rounded-3xl cyber-glass-card p-4 flex items-center gap-3.5 cursor-pointer group"
         >
-          <div className="h-12 w-12 rounded-full border border-emerald-400/40 bg-emerald-950/40 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)] group-hover:scale-105 transition-transform shrink-0">
+          <div className="h-12 w-12 rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform shrink-0">
             <BookOpen size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 font-bold block">{liveMode ? 'Live Videos' : 'Courses'}</span>
+            <span className="text-[10px] text-slate-500 font-bold block">{liveMode ? 'Live Videos' : 'Courses'}</span>
             <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="text-2xl font-black text-white leading-none">{coursesCount}</span>
-              <span className="text-[10px] text-slate-400 font-semibold">{liveMode ? 'Tracks' : 'In Progress'}</span>
+              <span className="text-2xl font-black text-slate-900 leading-none">{coursesCount}</span>
+              <span className="text-[10px] text-slate-600 font-semibold">{liveMode ? 'Tracks' : 'In Progress'}</span>
             </div>
           </div>
         </motion.div>
@@ -289,14 +290,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
           onClick={() => onNavigate('live')}
           className="rounded-3xl cyber-glass-card p-4 flex items-center gap-3.5 cursor-pointer group"
         >
-          <div className="h-12 w-12 rounded-full border border-emerald-400/40 bg-emerald-950/40 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)] group-hover:scale-105 transition-transform shrink-0">
-            <Radio size={20} className={liveClasses.some((l: any) => l.status === 'LIVE') ? 'animate-pulse text-rose-400' : ''} />
+          <div className="h-12 w-12 rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform shrink-0">
+            <Radio size={20} className={liveClasses.some((l: any) => l.status === 'LIVE') ? 'animate-pulse text-rose-500' : ''} />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 font-bold block">{liveMode ? 'Live Sessions' : 'Doubt Sessions'}</span>
+            <span className="text-[10px] text-slate-500 font-bold block">{liveMode ? 'Live Sessions' : 'Doubt Sessions'}</span>
             <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="text-2xl font-black text-white leading-none">{liveCount}</span>
-              <span className="text-[10px] text-slate-400 font-semibold">Scheduled</span>
+              <span className="text-2xl font-black text-slate-900 leading-none">{liveCount}</span>
+              <span className="text-[10px] text-slate-600 font-semibold">Scheduled</span>
             </div>
           </div>
         </motion.div>
@@ -307,14 +308,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
           onClick={() => onNavigate('assignments')}
           className="rounded-3xl cyber-glass-card p-4 flex items-center gap-3.5 cursor-pointer group"
         >
-          <div className="h-12 w-12 rounded-full border border-emerald-400/40 bg-emerald-950/40 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)] group-hover:scale-105 transition-transform shrink-0">
+          <div className="h-12 w-12 rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform shrink-0">
             <FileText size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-slate-400 font-bold block">Assignments</span>
+            <span className="text-[10px] text-slate-500 font-bold block">Assignments</span>
             <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="text-2xl font-black text-white leading-none">{assignmentsPending}</span>
-              <span className="text-[10px] text-slate-400 font-semibold">{liveMode ? 'Tasks' : 'Pending'}</span>
+              <span className="text-2xl font-black text-slate-900 leading-none">{assignmentsPending}</span>
+              <span className="text-[10px] text-slate-600 font-semibold">{liveMode ? 'Tasks' : 'Pending'}</span>
             </div>
           </div>
         </motion.div>
@@ -326,14 +327,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
             onClick={() => onNavigate('forum')}
             className="rounded-3xl cyber-glass-card p-4 flex items-center gap-3.5 cursor-pointer group"
           >
-            <div className="h-12 w-12 rounded-full border border-emerald-400/40 bg-emerald-950/40 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)] group-hover:scale-105 transition-transform shrink-0">
+            <div className="h-12 w-12 rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform shrink-0">
               <MessageSquare size={20} />
             </div>
             <div>
-              <span className="text-[10px] text-slate-400 font-bold block">Mentee Doubts</span>
+              <span className="text-[10px] text-slate-500 font-bold block">Mentee Doubts</span>
               <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-2xl font-black text-white leading-none">{stats?.mentee_queries_count ?? 0}</span>
-                <span className="text-[10px] text-slate-400 font-semibold">Q&A Forum</span>
+                <span className="text-2xl font-black text-slate-900 leading-none">{stats?.mentee_queries_count ?? 0}</span>
+                <span className="text-[10px] text-slate-600 font-semibold">Q&A Forum</span>
               </div>
             </div>
           </motion.div>
@@ -343,14 +344,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
             onClick={() => onNavigate('certificates')}
             className="rounded-3xl cyber-glass-card p-4 flex items-center gap-3.5 cursor-pointer group"
           >
-            <div className="h-12 w-12 rounded-full border border-emerald-400/40 bg-emerald-950/40 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.3)] group-hover:scale-105 transition-transform shrink-0">
+            <div className="h-12 w-12 rounded-full border border-emerald-500/30 bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:scale-105 transition-transform shrink-0">
               <Award size={20} />
             </div>
             <div>
-              <span className="text-[10px] text-slate-400 font-bold block">Certificates</span>
+              <span className="text-[10px] text-slate-500 font-bold block">Certificates</span>
               <div className="flex items-baseline gap-1.5 mt-0.5">
-                <span className="text-2xl font-black text-white leading-none">{certificatesEarned}</span>
-                <span className="text-[10px] text-slate-400 font-semibold">Earned</span>
+                <span className="text-2xl font-black text-slate-900 leading-none">{certificatesEarned}</span>
+                <span className="text-[10px] text-slate-600 font-semibold">Earned</span>
               </div>
             </div>
           </motion.div>
@@ -363,8 +364,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
         {/* Daily Study Activity Spline Wave Graph (7-8 Cols) */}
         <div className="lg:col-span-7 rounded-3xl cyber-glass-card p-5 flex flex-col justify-between">
           <div className="flex items-center justify-between pb-2">
-            <h3 className="font-extrabold text-sm text-white tracking-wide">Daily Study Activity</h3>
-            <span className="flex items-center gap-1 text-[11px] text-emerald-300 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 rounded-xl font-bold">
+            <h3 className="font-extrabold text-sm text-slate-900 tracking-wide">Daily Study Activity</h3>
+            <span className="flex items-center gap-1 text-[11px] text-emerald-700 bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 rounded-xl font-bold">
               <span>Today</span>
             </span>
           </div>
@@ -401,10 +402,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
               </defs>
 
               {/* Horizontal grid guide lines */}
-              <line x1="30" y1="30" x2="480" y2="30" stroke="rgba(30, 41, 59, 0.4)" strokeDasharray="3,3" />
-              <line x1="30" y1="75" x2="480" y2="75" stroke="rgba(30, 41, 59, 0.4)" strokeDasharray="3,3" />
-              <line x1="30" y1="120" x2="480" y2="120" stroke="rgba(30, 41, 59, 0.4)" strokeDasharray="3,3" />
-              <line x1="30" y1="165" x2="480" y2="165" stroke="rgba(30, 41, 59, 0.8)" />
+              <line x1="30" y1="30" x2="480" y2="30" stroke="#e2e8f0" strokeDasharray="3,3" />
+              <line x1="30" y1="75" x2="480" y2="75" stroke="#e2e8f0" strokeDasharray="3,3" />
+              <line x1="30" y1="120" x2="480" y2="120" stroke="#e2e8f0" strokeDasharray="3,3" />
+              <line x1="30" y1="165" x2="480" y2="165" stroke="#cbd5e1" />
 
               {/* Y Axis Labels */}
               <text x="15" y="34" fill="#64748b" fontSize="9" fontWeight="bold">3h</text>
@@ -419,7 +420,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
               <path
                 d={splinePath}
                 fill="none"
-                stroke="#34d399"
+                stroke="#10b981"
                 strokeWidth="3"
                 strokeLinecap="round"
                 filter="url(#neonGlow)"
@@ -432,7 +433,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
                   y1={dailyData[activeTooltipIndex].y}
                   x2={dailyData[activeTooltipIndex].x}
                   y2="165"
-                  stroke="#34d399"
+                  stroke="#10b981"
                   strokeWidth="1.2"
                   strokeDasharray="2,2"
                   opacity="0.8"
@@ -446,7 +447,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
                     cx={pt.x}
                     cy={pt.y}
                     r={activeTooltipIndex === idx ? 6 : 4}
-                    fill={activeTooltipIndex === idx ? '#34d399' : '#059669'}
+                    fill={activeTooltipIndex === idx ? '#10b981' : '#059669'}
                     stroke="#ffffff"
                     strokeWidth={activeTooltipIndex === idx ? 2 : 1.5}
                     className="transition-all hover:scale-125"
@@ -456,7 +457,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
                   <text
                     x={pt.x}
                     y="180"
-                    fill={activeTooltipIndex === idx ? '#34d399' : '#94a3b8'}
+                    fill={activeTooltipIndex === idx ? '#10b981' : '#64748b'}
                     fontSize="9.5"
                     fontWeight={activeTooltipIndex === idx ? 'bold' : 'normal'}
                     textAnchor="middle"
@@ -468,9 +469,9 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
             </svg>
           </div>
 
-          <div className="flex justify-end pt-1 border-t border-slate-800/60">
-            <span className="text-[11px] text-slate-400 font-semibold">
-              Total Today <span className="text-emerald-400 font-bold font-mono">3h 45m</span>
+          <div className="flex justify-end pt-1 border-t border-slate-200">
+            <span className="text-[11px] text-slate-600 font-semibold">
+              Total Today <span className="text-emerald-600 font-bold font-mono">3h 45m</span>
             </span>
           </div>
         </div>
@@ -479,10 +480,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
         {liveMode ? (
           <div className="lg:col-span-5 rounded-3xl cyber-glass-card p-5 flex flex-col justify-between space-y-3">
             <div className="flex items-center justify-between pb-1">
-              <h3 className="font-extrabold text-sm text-white tracking-wide flex items-center gap-2">
+              <h3 className="font-extrabold text-sm text-slate-900 tracking-wide flex items-center gap-2">
                 <span>Live Mentoring & Schedule</span>
                 {liveClasses.some((l: any) => l.status === 'LIVE') && (
-                  <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-rose-400 bg-rose-500/20 border border-rose-500/40 px-2 py-0.5 rounded-full animate-pulse">
+                  <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-rose-600 bg-rose-500/20 border border-rose-500/40 px-2 py-0.5 rounded-full animate-pulse">
                     <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
                     Live
                   </span>
@@ -490,7 +491,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
               </h3>
               <button 
                 onClick={() => onNavigate('live')}
-                className="text-[11px] text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 group cursor-pointer"
+                className="text-[11px] text-emerald-600 hover:text-emerald-700 font-bold flex items-center gap-1 group cursor-pointer"
               >
                 <span>Full Schedule</span>
                 <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
@@ -501,30 +502,30 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
             {nextLiveSession ? (
               <div 
                 onClick={() => onNavigate('live')}
-                className="p-3.5 rounded-2xl bg-slate-950/80 border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer group shadow-inner space-y-2.5"
+                className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-emerald-500/50 hover:bg-emerald-50/20 transition-all cursor-pointer group shadow-xs space-y-2.5"
               >
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-rose-500/20 to-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-inner group-hover:scale-105 transition-transform">
-                    <Radio size={17} className={nextLiveSession.status === 'LIVE' ? 'animate-pulse text-rose-400' : 'text-emerald-400'} />
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-rose-500/15 to-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform">
+                    <Radio size={17} className={nextLiveSession.status === 'LIVE' ? 'animate-pulse text-rose-500' : 'text-emerald-600'} />
                   </div>
                   <div className="min-w-0 flex-1 space-y-0.5">
-                    <h4 className="font-extrabold text-sm text-white group-hover:text-emerald-300 transition-colors truncate">
+                    <h4 className="font-extrabold text-sm text-slate-900 group-hover:text-emerald-700 transition-colors truncate">
                       {nextLiveSession.title}
                     </h4>
-                    <p className="text-[11px] text-slate-400 font-medium flex items-center gap-1.5 truncate">
-                      <span className="text-emerald-400 font-semibold">{nextLiveSession.course_title || 'Dedicated Live Track'}</span>
+                    <p className="text-[11px] text-slate-600 font-medium flex items-center gap-1.5 truncate">
+                      <span className="text-emerald-700 font-semibold">{nextLiveSession.course_title || 'Dedicated Live Track'}</span>
                       <span>•</span>
-                      <span>{new Date(nextLiveSession.scheduled_time).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+                      <span>{formatDisplayDateTime(nextLiveSession.scheduled_time)}</span>
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-emerald-500/10">
+                <div className="pt-2 text-[11px] text-slate-600 flex items-center justify-between border-t border-slate-200">
                   <span className="font-medium flex items-center gap-1.5">
-                    <span className={`h-2 w-2 rounded-full ${nextLiveSession.status === 'LIVE' ? 'bg-rose-500 animate-ping' : 'bg-emerald-400'}`} />
-                    <span className="text-[10px]">{nextLiveSession.status === 'LIVE' ? 'Class In Progress (Live Now)' : 'Upcoming Scheduled Session'}</span>
+                    <span className={`h-2 w-2 rounded-full ${nextLiveSession.status === 'LIVE' ? 'bg-rose-500 animate-ping' : 'bg-emerald-500'}`} />
+                    <span className="text-[10px] text-slate-700 font-semibold">{nextLiveSession.status === 'LIVE' ? 'Class In Progress (Live Now)' : 'Upcoming Scheduled Session'}</span>
                   </span>
-                  <button className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-lg font-bold text-[10px] group-hover:bg-emerald-500 group-hover:text-black transition-all">
+                  <button className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[10px] transition-all shadow-xs">
                     {nextLiveSession.status === 'LIVE' ? 'Join Live Stream' : 'View Session'}
                   </button>
                 </div>
@@ -532,56 +533,56 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
             ) : (
               <div 
                 onClick={() => onNavigate('courses')}
-                className="p-3.5 rounded-2xl bg-slate-950/80 border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer group shadow-inner space-y-2.5"
+                className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-emerald-500/50 hover:bg-emerald-50/20 transition-all cursor-pointer group shadow-xs space-y-2.5"
               >
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                  <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform">
                     <BookOpen size={17} />
                   </div>
                   <div className="min-w-0 flex-1 space-y-0.5">
-                    <h4 className="font-extrabold text-sm text-white group-hover:text-emerald-300 transition-colors truncate">
+                    <h4 className="font-extrabold text-sm text-slate-900 group-hover:text-emerald-700 transition-colors truncate">
                       {activeCourse.title}
                     </h4>
-                    <p className="text-[11px] text-slate-400 font-medium">
+                    <p className="text-[11px] text-slate-600 font-medium">
                       Live Video Library & Practical Replays
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-emerald-500/10">
-                  <span className="font-medium text-emerald-400 text-[10px]">Live Mentoring Track</span>
-                  <button className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-lg font-bold text-[10px] group-hover:bg-emerald-500 group-hover:text-black transition-all">
+                <div className="pt-2 text-[11px] text-slate-600 flex items-center justify-between border-t border-slate-200">
+                  <span className="font-semibold text-emerald-700 text-[10px]">Live Mentoring Track</span>
+                  <button className="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[10px] transition-all shadow-xs">
                     Watch Replays
                   </button>
                 </div>
               </div>
             )}
 
-            {/* Quick Mentee Replays & Doubts Action Bar to fill height perfectly */}
+            {/* Quick Mentee Replays & Doubts Action Bar */}
             <div className="grid grid-cols-2 gap-2 pt-1">
               <div 
                 onClick={() => onNavigate('courses')}
-                className="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-emerald-500/40 transition-all cursor-pointer group flex items-center gap-2.5"
+                className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-500/40 hover:bg-emerald-50/20 transition-all cursor-pointer group flex items-center gap-2.5"
               >
-                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                   <BookOpen size={14} />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[10px] text-white font-bold block truncate group-hover:text-emerald-300">Video Library</span>
-                  <span className="text-[9px] text-slate-400 block truncate">{courses.length} Replay Tracks</span>
+                  <span className="text-[10px] text-slate-900 font-bold block truncate group-hover:text-emerald-700">Video Library</span>
+                  <span className="text-[9px] text-slate-500 block truncate">{courses.length} Replay Tracks</span>
                 </div>
               </div>
 
               <div 
                 onClick={() => onNavigate('forum')}
-                className="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-emerald-500/40 transition-all cursor-pointer group flex items-center gap-2.5"
+                className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-emerald-500/40 hover:bg-emerald-50/20 transition-all cursor-pointer group flex items-center gap-2.5"
               >
-                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                   <MessageSquare size={14} />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[10px] text-white font-bold block truncate group-hover:text-emerald-300">Ask Mentor</span>
-                  <span className="text-[9px] text-slate-400 block truncate">1-on-1 Q&A Forum</span>
+                  <span className="text-[10px] text-slate-900 font-bold block truncate group-hover:text-emerald-700">Ask Mentor</span>
+                  <span className="text-[9px] text-slate-500 block truncate">1-on-1 Q&A Forum</span>
                 </div>
               </div>
             </div>
@@ -589,10 +590,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
         ) : (
           <div className="lg:col-span-5 rounded-3xl cyber-glass-card p-5 flex flex-col justify-between">
             <div className="flex items-center justify-between pb-2">
-              <h3 className="font-extrabold text-sm text-white tracking-wide">Continue Learning</h3>
+              <h3 className="font-extrabold text-sm text-slate-900 tracking-wide">Continue Learning</h3>
               <button 
                 onClick={() => onNavigate('courses')}
-                className="text-[11px] text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1 group"
+                className="text-[11px] text-emerald-600 hover:text-emerald-700 font-bold flex items-center gap-1 group"
               >
                 <span>View All</span>
                 <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
@@ -602,21 +603,21 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
             {/* Active Course Card Preview */}
             <div 
               onClick={() => onOpenCourse(activeCourse.id)}
-              className="p-4 rounded-2xl bg-slate-950/70 border border-emerald-500/30 hover:border-emerald-400 transition-all cursor-pointer group shadow-inner space-y-3"
+              className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-emerald-500/50 hover:bg-emerald-50/20 transition-all cursor-pointer group shadow-xs space-y-3"
             >
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform">
                   <BookOpen size={17} />
                 </div>
                 <div className="min-w-0 flex-1 space-y-0.5">
-                  <h4 className="font-extrabold text-sm text-white group-hover:text-emerald-300 transition-colors truncate">
+                  <h4 className="font-extrabold text-sm text-slate-900 group-hover:text-emerald-700 transition-colors truncate">
                     {activeCourse.title}
                   </h4>
-                  <p className="text-[11px] text-slate-400 font-medium">
+                  <p className="text-[11px] text-slate-600 font-medium">
                     {activeCourse.category_name && activeCourse.category_name.toLowerCase() !== activeCourse.title.toLowerCase()
                       ? `${activeCourse.category_name} • `
                       : 'Training Track • '}
-                    <span className={activeCourseProgress === 100 ? "text-emerald-400 font-semibold" : "text-slate-300"}>
+                    <span className={activeCourseProgress === 100 ? "text-emerald-700 font-semibold" : "text-slate-700"}>
                       {activeCourseProgress}% Completed
                     </span>
                   </p>
@@ -625,25 +626,25 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate, onOpenCo
 
               {/* Glowing Emerald Capsule Progress Bar */}
               <div className="flex items-center gap-3 pt-1">
-                <div className="flex-1 h-2 rounded-full bg-slate-800/80 overflow-hidden p-0.5 border border-slate-700/60">
+                <div className="flex-1 h-2 rounded-full bg-slate-200 overflow-hidden p-0.5 border border-slate-300">
                   <div 
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 shadow-[0_0_10px_#34d399] transition-all duration-500"
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 shadow-sm transition-all duration-500"
                     style={{ width: `${activeCourseProgress}%` }}
                   />
                 </div>
-                <span className="text-[11px] font-mono font-black text-emerald-400 shrink-0">
+                <span className="text-[11px] font-mono font-black text-emerald-700 shrink-0">
                   {activeCourseProgress}%
                 </span>
               </div>
             </div>
 
-            <div className="pt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-emerald-500/10">
+            <div className="pt-2 text-[11px] text-slate-600 flex items-center justify-between border-t border-slate-200">
               <span className="font-medium">
                 {activeCourseProgress === 100 
                   ? "Status: Curriculum Completed" 
                   : "Active Track: Ongoing Module"}
               </span>
-              <span className="text-emerald-400 font-bold">
+              <span className="text-emerald-600 font-bold">
                 {activeCourseProgress === 100 
                   ? "100% Finished" 
                   : "In Progress"}

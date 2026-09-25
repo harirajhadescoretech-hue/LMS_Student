@@ -7,6 +7,7 @@ import {
   Plus, Edit3, Trash2, X, Save, Layers, PlusCircle, CheckCircle, Settings, Users
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface QuizAttempt {
   id: number;
@@ -467,7 +468,7 @@ export const QuizTab: React.FC = () => {
                           </span>
                         </td>
                         <td className="py-3.5 px-4 font-medium text-muted-foreground">
-                          {new Date(att.completed_at).toLocaleString()}
+                          {formatDisplayDateTime(att.completed_at)}
                         </td>
                         <td className="py-3.5 px-4 text-right">
                           <button
@@ -663,7 +664,7 @@ export const QuizTab: React.FC = () => {
                 <div className="sm:col-span-3 grid gap-3 sm:grid-cols-4 items-end">
                   <div className="sm:col-span-2">
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Quiz Title *</label>
-                    <input type="text" value={quizTitle} onChange={(e) => setQuizTitle(e.target.value)} placeholder="Checkpoint Quiz Title" className="w-full h-10 px-3 bg-card border border-border rounded-xl font-semibold" />
+                    <input type="text" value={quizTitle} onChange={(e) => setQuizTitle(e.target.value)} placeholder="Enter quiz title" className="w-full h-10 px-3 bg-card border border-border rounded-xl font-semibold" />
                   </div>
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Min Correct Answers *</label>
@@ -793,7 +794,7 @@ export const QuizTab: React.FC = () => {
                     </h5>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Question Prompt *</label>
-                      <input type="text" value={qText} onChange={(e) => setQText(e.target.value)} placeholder="e.g. What is Django?" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
+                      <input type="text" value={qText} onChange={(e) => setQText(e.target.value)} placeholder="Enter question prompt" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
                     </div>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Question Type</label>

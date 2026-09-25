@@ -24,6 +24,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         request = cast(Request, self.request)
         user = request.user
         if not isinstance(user, CustomUser):
+            # pyrefly: ignore [missing-attribute]
             return Quiz.objects.none()
 
         module_id = request.query_params.get('module')
@@ -35,25 +36,31 @@ class QuizViewSet(viewsets.ModelViewSet):
             staff = (profile.assigned_staff or profile.assigned_live_staff) if profile else None
             staff_cat = getattr(getattr(staff, 'staff_profile', None), 'category', None)
             
+            # pyrefly: ignore [missing-attribute]
             qs = Quiz.objects.filter(module__course__is_published=True)
             if student_courses or staff_cat or staff:
-                # pyrefly: ignore [missing-import]
+                # pyrefly: ignore [missing-import, untyped-import]
                 from django.db.models import Q
-                filters = Q()
+                filters = Q(module__course__is_mentoring_track=True)
                 if student_courses:
                     filters |= Q(module__course__in=student_courses)
                 if staff_cat:
                     filters |= Q(module__course__category=staff_cat)
                 if staff:
-                    filters |= Q(module__course__mentor=staff)
+                    filters |= Q(module__course__mentor=staff) | Q(module__course__created_by=staff)
                 qs = qs.filter(filters).distinct()
         elif user.role == 'STAFF':
-            category = getattr(user, 'staff_profile', None) and user.staff_profile.category
+            # pyrefly: ignore [missing-import, untyped-import]
+            from django.db.models import Q
+            profile = getattr(user, 'staff_profile', None)
+            category = getattr(profile, 'category', None)
+            staff_filters = Q(module__course__created_by=user) | Q(module__course__mentor=user)
             if category:
-                qs = Quiz.objects.filter(module__course__category=category)
-            else:
-                qs = Quiz.objects.all()
+                staff_filters |= Q(module__course__category=category)
+            # pyrefly: ignore [missing-attribute]
+            qs = Quiz.objects.filter(staff_filters)
         else:
+            # pyrefly: ignore [missing-attribute]
             qs = Quiz.objects.all()
 
         qs = qs.select_related('module', 'module__course', 'module__course__category').prefetch_related('questions')
@@ -96,6 +103,7 @@ class QuizViewSet(viewsets.ModelViewSet):
 
         # Enforce retry rules limit check
 
+        # pyrefly: ignore [missing-attribute]
         previous_attempts = QuizAttempt.objects.filter(student=user, quiz=quiz).count()
         if previous_attempts >= quiz.max_retries:
             return response.Response(
@@ -158,6 +166,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         passed = score >= quiz.passing_score
 
         # Save student attempt
+        # pyrefly: ignore [missing-attribute]
         attempt = QuizAttempt.objects.create(
             student=user,
             quiz=quiz,
@@ -180,6 +189,7 @@ class QuizViewSet(viewsets.ModelViewSet):
                 )
                 for admin in admins
             ]
+            # pyrefly: ignore [missing-attribute]
             Notification.objects.bulk_create(notifs)
         except Exception:
             pass  # Non-blocking — never crash submission on notification failure
@@ -199,6 +209,7 @@ class QuizViewSet(viewsets.ModelViewSet):
         })
 
 class QuestionViewSet(viewsets.ModelViewSet):
+    # pyrefly: ignore [missing-attribute]
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     permission_classes = [IsSuperAdminOrStaff]
@@ -215,8 +226,10 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
         from apps.users.models import CustomUser
         user = self.request.user
         if not isinstance(user, CustomUser):
+            # pyrefly: ignore [missing-attribute]
             return QuizAttempt.objects.none()
 
+        # pyrefly: ignore [missing-attribute]
         qs = QuizAttempt.objects.select_related('student', 'quiz')
 
         if user.role == 'STUDENT':
@@ -224,7 +237,7 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
 
         elif user.role == 'STAFF':
             # Filter by directly assigned students only
-            # pyrefly: ignore [missing-import]
+            # pyrefly: ignore [missing-import, untyped-import]
             from django.db.models import Q
             return qs.filter(
                 Q(student__student_profile__assigned_staff=user) |
@@ -248,11 +261,12 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
         if not isinstance(user, CustomUser) or user.role not in ['SUPER_ADMIN', 'STAFF']:
             return response.Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
 
+        # pyrefly: ignore [missing-attribute]
         attempts = QuizAttempt.objects.filter(student__email=email)
         
         if user.role == 'STAFF':
             # Only delete attempts for students directly assigned to this staff
-            # pyrefly: ignore [missing-import]
+            # pyrefly: ignore [missing-import, untyped-import]
             from django.db.models import Q
             attempts = attempts.filter(
                 Q(student__student_profile__assigned_staff=user) |
@@ -262,6 +276,7 @@ class QuizAttemptViewSet(viewsets.ModelViewSet):
         count = attempts.count()
         attempts.delete()
         
+        # pyrefly: ignore [missing-attribute]
         AuditLog.objects.create(
             user=user,
             action=f"Deleted all {count} quiz attempts for student {email}",

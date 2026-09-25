@@ -14,6 +14,7 @@ import { AnimatePresence } from 'framer-motion';
 import { ApexAITutorCore } from '../../../components/ApexAITutorCore';
 import { UniversalVideoPlayer } from '../../../components/UniversalVideoPlayer';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface Course {
   id: number;
@@ -790,7 +791,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, onOp
                     </div>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Student Notes</label>
-                      <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Describe your solution..." className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none" />
+                      <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Enter your solution description" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none" />
                     </div>
                     <button onClick={handleAssignmentSubmit} disabled={!fileUrl} className="w-full py-2.5 bg-primary text-primary-foreground font-semibold rounded-xl">Submit Homework</button>
                   </div>
@@ -852,12 +853,12 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, onOp
               </div>
 
               {/* Video Player Meta & Action Bar */}
-              <div className="cyber-glass-card p-3 px-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-lg border border-emerald-500/20">
+              <div className="cyber-glass-card p-3 px-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-sm border border-emerald-500/20">
                 <div className="flex items-center gap-3">
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-700 border border-emerald-500/30">
                     Active Stream
                   </span>
-                  <h3 className="text-xs font-bold text-white truncate max-w-xs sm:max-w-md">
+                  <h3 className="text-xs font-bold text-slate-900 truncate max-w-xs sm:max-w-md">
                     {activeLesson.title}
                   </h3>
                 </div>
@@ -866,7 +867,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, onOp
                   {/* Status / Mark Completed Action (Hidden for Live Students) */}
                   {!isLiveStudent && (
                     activeLesson.completed ? (
-                      <span className="px-3 py-1 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+                      <span className="px-3 py-1 rounded-xl bg-emerald-500/15 text-emerald-700 border border-emerald-500/30 text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-xs">
                         <CheckCircle2 size={13} /> Completed
                       </span>
                     ) : (
@@ -951,7 +952,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, onOp
                           type="text"
                           value={newBookmarkNote}
                           onChange={(e) => setNewBookmarkNote(e.target.value)}
-                          placeholder="Add bookmark description..."
+                          placeholder="Enter bookmark description"
                           className="h-9 px-3 text-[11px] bg-muted/50 border border-border rounded-xl outline-none flex-1 focus:border-primary"
                         />
                         <button onClick={() => addBookmarkMutation.mutate()} className="px-4 h-9 bg-primary text-primary-foreground font-bold rounded-xl text-[10px] shadow-sm hover:brightness-110">
@@ -991,7 +992,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, onOp
                           type="text"
                           value={newNoteText}
                           onChange={(e) => setNewNoteText(e.target.value)}
-                          placeholder="Type your study note or concept takeaway..."
+                          placeholder="Enter your study note or concept takeaway"
                           className="h-9 px-3.5 text-[11px] bg-muted/40 border border-border rounded-xl outline-none flex-1 focus:border-primary"
                         />
                         <button onClick={() => addNoteMutation.mutate()} className="px-4 h-9 bg-primary text-primary-foreground font-bold rounded-xl text-[10px] shadow-sm hover:brightness-110">
@@ -1005,7 +1006,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, onOp
                             <div className="space-y-0.5">
                               <p className="text-foreground font-medium">{n.text}</p>
                               {n.created_at && (
-                                <span className="text-[9px] text-muted-foreground block">{new Date(n.created_at).toLocaleString()}</span>
+                                <span className="text-[9px] text-muted-foreground block">{formatDisplayDateTime(n.created_at)}</span>
                               )}
                             </div>
                             <button onClick={() => deleteNoteMutation.mutate(n.id)} className="text-destructive hover:bg-destructive/10 p-1.5 rounded-lg transition-colors" title="Delete note">

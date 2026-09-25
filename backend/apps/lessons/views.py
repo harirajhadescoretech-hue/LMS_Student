@@ -51,18 +51,24 @@ class LessonViewSet(viewsets.ModelViewSet):
             if student_courses or staff_cat or staff:
                 # pyrefly: ignore [missing-import]
                 from django.db.models import Q
-                filters = Q()
+                filters = Q(module__course__is_mentoring_track=True)
                 if student_courses:
                     filters |= Q(module__course__in=student_courses)
                 if staff_cat:
                     filters |= Q(module__course__category=staff_cat)
                 if staff:
-                    filters |= Q(module__course__mentor=staff)
+                    filters |= Q(module__course__mentor=staff) | Q(module__course__created_by=staff)
                 qs = qs.filter(filters).distinct()
         elif user.role == 'STAFF':
+            from django.db.models import Q as DQ
             category = getattr(user, 'staff_profile', None) and user.staff_profile.category
+            # Allow staff to see lessons for courses in their category,
+            # AND courses they created (e.g. mentoring/recording tracks), AND courses they mentor
+            staff_filters = DQ(module__course__created_by=user)
             if category:
-                qs = qs.filter(module__course__category=category)
+                staff_filters |= DQ(module__course__category=category)
+            staff_filters |= DQ(module__course__mentor=user)
+            qs = qs.filter(staff_filters)
 
         if module_id:
             qs = qs.filter(module_id=module_id)

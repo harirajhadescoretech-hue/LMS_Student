@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { Award, Plus, Trash2, X, Download, Search, Loader2, Check } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDate } from '../../../utils/dateTimeUtils';
 
 interface Certificate {
   id: number;
@@ -209,7 +210,7 @@ export const CertificateTab: React.FC = () => {
                     <span className={`text-[9px] font-bold px-2 py-0.5 rounded-lg border uppercase ${cert.is_issued ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20 animate-pulse'}`}>
                       {cert.is_issued ? 'Released' : 'Locked (Pending 100%)'}
                     </span>
-                    <span className="text-[10px] text-muted-foreground">{new Date(cert.issued_at).toLocaleDateString()}</span>
+                    <span className="text-[10px] text-muted-foreground">{formatDisplayDate(cert.issued_at)}</span>
                   </div>
                 </div>
               </div>
@@ -266,7 +267,7 @@ export const CertificateTab: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Custom Certificate Code (Optional)</label>
-                  <input type="text" value={customCertCode} onChange={(e) => setCustomCertCode(e.target.value)} placeholder="e.g. APEX-CERT-102" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={customCertCode} onChange={(e) => setCustomCertCode(e.target.value)} placeholder="Enter custom certificate code" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Upload Credential Certificate * (PDF or Image)</label>

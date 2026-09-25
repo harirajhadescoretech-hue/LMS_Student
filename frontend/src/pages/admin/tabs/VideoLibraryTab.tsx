@@ -104,7 +104,7 @@ export const VideoLibraryTab: React.FC = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by video title or Cloudflare Stream ID..."
+            placeholder="Enter video title or stream ID to search..."
             className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl outline-none focus:border-primary/45"
           />
         </div>
@@ -153,15 +153,15 @@ export const VideoLibraryTab: React.FC = () => {
               <form onSubmit={(e) => { e.preventDefault(); uploadVideoMutation.mutate(); }} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Video Title *</label>
-                  <input type="text" value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)} required placeholder="e.g. Docker Containarization" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={videoTitle} onChange={(e) => setVideoTitle(e.target.value)} required placeholder="Enter video title" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Cloudflare Stream ID (Optional)</label>
-                  <input type="text" value={streamId} onChange={(e) => setStreamId(e.target.value)} placeholder="e.g. cf-stream-uuid" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={streamId} onChange={(e) => setStreamId(e.target.value)} placeholder="Enter Cloudflare stream ID" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Duration (Seconds) *</label>
-                  <input type="number" value={duration} onChange={(e) => setDuration(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="number" value={duration} onChange={(e) => setDuration(e.target.value)} required placeholder="Enter duration in seconds" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <button type="submit" disabled={uploadVideoMutation.isPending} className="w-full py-2.5 bg-primary text-primary-foreground font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-primary/10">
                   <Upload size={12} />

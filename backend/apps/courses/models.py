@@ -1,4 +1,4 @@
-# pyrefly: ignore [missing-import]
+# pyrefly: ignore [missing-import, untyped-import]
 from django.db import models
 from apps.courses.discussion_models import CourseDiscussionPost, CourseDiscussionComment
 

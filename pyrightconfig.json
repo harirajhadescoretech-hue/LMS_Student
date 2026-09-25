@@ -3,5 +3,9 @@
   "venv": "venv",
   "extraPaths": [
     "./backend"
-  ]
+  ],
+  "typeCheckingMode": "basic",
+  "reportAttributeAccessIssue": "none",
+  "reportIncompatibleVariableOverride": "none",
+  "reportIndexIssue": "none"
 }

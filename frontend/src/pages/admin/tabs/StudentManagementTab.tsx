@@ -583,7 +583,7 @@ export const StudentManagementTab: React.FC = () => {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search students directory..."
+              placeholder="Enter student name or email to search..."
               className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl outline-none focus:border-primary/45"
             />
           </div>
@@ -731,16 +731,16 @@ export const StudentManagementTab: React.FC = () => {
               }} autoComplete="off" className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Email Address *</label>
-                  <input name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="off" placeholder="student@example.com" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="off" placeholder="Enter student email address" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">First Name *</label>
-                    <input name="first_name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required autoComplete="off" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <input name="first_name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required autoComplete="off" placeholder="Enter first name" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Last Name *</label>
-                    <input name="last_name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required autoComplete="off" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <input name="last_name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required autoComplete="off" placeholder="Enter last name" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                 </div>
 
@@ -804,7 +804,7 @@ export const StudentManagementTab: React.FC = () => {
                       value={password} 
                       onChange={(e) => setPassword(e.target.value)} 
                       autoComplete="new-password" 
-                      placeholder="Defaults to: apex123" 
+                      placeholder="Enter custom password or leave blank" 
                       className="w-full h-10 pl-3 pr-10 bg-muted/40 border border-border rounded-xl outline-none" 
                     />
                     <button
@@ -823,7 +823,7 @@ export const StudentManagementTab: React.FC = () => {
                     <h5 className="font-bold text-[10px] uppercase text-primary">Pre-upload Certificate for 100% Release</h5>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Custom Certificate Code (Optional)</label>
-                      <input type="text" value={certCode} onChange={(e) => setCertCode(e.target.value)} placeholder="e.g. APEX-CERT-123" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none text-[11px]" />
+                      <input type="text" value={certCode} onChange={(e) => setCertCode(e.target.value)} placeholder="Enter custom certificate code" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none text-[11px]" />
                     </div>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Upload Certificate File</label>
@@ -951,7 +951,7 @@ export const StudentManagementTab: React.FC = () => {
                     <h5 className="font-bold text-[10px] uppercase text-primary">Pre-upload Certificate for 100% Release</h5>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Custom Certificate Code (Optional)</label>
-                      <input type="text" value={certCode} onChange={(e) => setCertCode(e.target.value)} placeholder="e.g. APEX-CERT-123" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none text-[11px]" />
+                      <input type="text" value={certCode} onChange={(e) => setCertCode(e.target.value)} placeholder="Enter custom certificate code" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none text-[11px]" />
                     </div>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Upload Certificate File</label>

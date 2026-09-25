@@ -11,6 +11,7 @@ import {
   AlertCircle, Sparkles, Filter, FileCheck 
 } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface Assignment {
   id: number;
@@ -217,14 +218,14 @@ export const AssignmentsTab: React.FC = () => {
                 key={assign.id} 
                 className="rounded-3xl cyber-glass-card p-5 shadow-sm space-y-4 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all flex flex-col justify-between"
               >
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-cyan-500/20 pb-3">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-emerald-500/20 pb-3">
                   <div className="space-y-1">
-                    <span className="text-[9px] font-black text-cyan-400 uppercase tracking-wider block">
+                    <span className="text-[9px] font-black text-teal-700 uppercase tracking-wider block">
                       {assign.course_title || 'Apex Track'} &rsaquo; {assign.module_title || 'Module'}
                     </span>
                     <div className="flex items-center gap-2.5 flex-wrap">
-                      <h3 className="font-extrabold text-sm leading-snug text-white">{assign.title}</h3>
-                      <span className="text-[9px] px-2.5 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-extrabold uppercase tracking-wider">
+                      <h3 className="font-extrabold text-sm leading-snug text-slate-900">{assign.title}</h3>
+                      <span className="text-[9px] px-2.5 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-800 font-extrabold uppercase tracking-wider">
                         Open Submission • No Deadline
                       </span>
                     </div>
@@ -232,26 +233,26 @@ export const AssignmentsTab: React.FC = () => {
 
                   <div>
                     {!submission ? (
-                      <span className="text-[9px] px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-slate-400 font-black uppercase tracking-wider">
+                      <span className="text-[9px] px-3 py-1 rounded-full bg-slate-100 border border-slate-300 text-slate-600 font-black uppercase tracking-wider">
                         Not Submitted
                       </span>
                     ) : submission.status === 'PENDING' ? (
-                      <span className="text-[9px] px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 font-black uppercase tracking-wider flex items-center gap-1">
+                      <span className="text-[9px] px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-700 font-black uppercase tracking-wider flex items-center gap-1">
                         <Clock size={11} /> Pending Review
                       </span>
                     ) : submission.status === 'GRADED' ? (
-                      <span className="text-[9px] px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-black uppercase tracking-wider flex items-center gap-1">
+                      <span className="text-[9px] px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 font-black uppercase tracking-wider flex items-center gap-1">
                         <CheckCircle2 size={11} /> Graded ({submission.grade})
                       </span>
                     ) : (
-                      <span className="text-[9px] px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-400 font-black uppercase tracking-wider flex items-center gap-1">
+                      <span className="text-[9px] px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-700 font-black uppercase tracking-wider flex items-center gap-1">
                         <AlertCircle size={11} /> Needs Revision
                       </span>
                     )}
                   </div>
                 </div>
 
-                <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{assign.description}</p>
+                <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">{assign.description}</p>
 
                 {assign.file_attachment && (
                   <button
@@ -294,7 +295,7 @@ export const AssignmentsTab: React.FC = () => {
                       </div>
                       <div>
                         <span className="text-[10px] font-bold text-muted-foreground block uppercase">Submitted At</span>
-                        <span className="text-foreground font-semibold">{new Date(submission.submitted_at).toLocaleString()}</span>
+                        <span className="text-foreground font-semibold">{formatDisplayDateTime(submission.submitted_at)}</span>
                       </div>
                     </div>
 
@@ -341,7 +342,7 @@ export const AssignmentsTab: React.FC = () => {
                           type="text"
                           value={uNotes}
                           onChange={(e) => setLocalNotes(prev => ({ ...prev, [assign.id]: e.target.value }))}
-                          placeholder="Provide details on your answer..."
+                          placeholder="Enter notes for grader"
                           className="w-full h-11 px-3.5 text-xs bg-muted/30 border border-border/80 rounded-2xl outline-none focus:border-cyan-500 focus:bg-background transition-all"
                         />
                       </div>

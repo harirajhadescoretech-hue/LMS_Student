@@ -4,6 +4,7 @@ import api from '../../../services/api';
 import toast from 'react-hot-toast';
 import { MessageSquare, Send, Search, HelpCircle, Trash2, User, Users, CheckCircle, Clock, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface UserShort {
   id: number;
@@ -132,7 +133,7 @@ export const ForumTab: React.FC = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search queries by mentee name, title or email..."
+            placeholder="Enter mentee name, title, or email to search..."
             className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl outline-none focus:border-primary/45 font-medium"
           />
         </div>
@@ -159,7 +160,7 @@ export const ForumTab: React.FC = () => {
                   </span>
                   <span>Student: <span className="text-foreground font-bold">{post.user_details?.name || post.user_details?.email}</span></span>
                   <span>&bull;</span>
-                  <span>Asked on: {new Date(post.created_at).toLocaleString()}</span>
+                  <span>Asked on: {formatDisplayDateTime(post.created_at)}</span>
                   <button 
                     onClick={() => { if (window.confirm('Delete this question thread?')) deletePostMutation.mutate(post.id); }} 
                     className="text-destructive hover:underline ml-auto flex items-center gap-1 font-semibold"
@@ -204,7 +205,7 @@ export const ForumTab: React.FC = () => {
                             )}
                           </span>
                           <div className="flex items-center gap-2">
-                            <span>{new Date(comment.created_at).toLocaleString()}</span>
+                            <span>{formatDisplayDateTime(comment.created_at)}</span>
                             <button 
                               onClick={() => { if (window.confirm('Delete reply?')) deleteCommentMutation.mutate(comment.id); }} 
                               className="text-destructive hover:opacity-80"
@@ -226,7 +227,7 @@ export const ForumTab: React.FC = () => {
                       type="text"
                       value={newCommentContent}
                       onChange={(e) => setNewCommentContent(e.target.value)}
-                      placeholder="Write your mentoring answer / clarification..."
+                      placeholder="Enter your mentoring reply or clarification..."
                       className="h-10 px-3 text-xs bg-card border border-border rounded-xl outline-none flex-1 focus:border-primary/45 font-medium"
                     />
                     <button

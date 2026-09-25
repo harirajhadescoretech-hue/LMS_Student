@@ -574,7 +574,7 @@ export const UniversalVideoPlayer: React.FC<UniversalVideoPlayerProps> = ({
             exit={{ opacity: 0, scale: 0.8 }}
             className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-xs pointer-events-none z-20"
           >
-            <div className="p-4 rounded-2xl cyber-glass-card flex items-center gap-3 text-cyan-400 border border-cyan-400/40 shadow-[0_0_25px_rgba(6,182,212,0.4)]">
+            <div className="p-4 rounded-2xl bg-slate-950/85 backdrop-blur-md flex items-center gap-3 text-cyan-400 border border-cyan-400/40 shadow-[0_0_25px_rgba(6,182,212,0.4)]">
               <Loader2 className="animate-spin" size={26} />
               <span className="text-xs font-black tracking-wider uppercase">Buffering</span>
             </div>
@@ -593,7 +593,7 @@ export const UniversalVideoPlayer: React.FC<UniversalVideoPlayerProps> = ({
             onClick={togglePlay}
             className="absolute inset-0 flex items-center justify-center cursor-pointer pointer-events-auto z-10"
           >
-            <div className="h-16 w-16 rounded-2xl cyber-glass-card flex items-center justify-center text-white border border-cyan-400/50 shadow-[0_0_30px_rgba(6,182,212,0.45)] hover:scale-110 hover:border-cyan-300 transition-all duration-200">
+            <div className="h-16 w-16 rounded-2xl bg-slate-950/85 backdrop-blur-md flex items-center justify-center text-white border border-cyan-400/50 shadow-[0_0_30px_rgba(6,182,212,0.45)] hover:scale-110 hover:border-cyan-300 transition-all duration-200">
               {isPlaying ? (
                 <Pause size={28} className="text-cyan-300 fill-cyan-400/30" />
               ) : (
@@ -771,7 +771,7 @@ export const UniversalVideoPlayer: React.FC<UniversalVideoPlayerProps> = ({
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute bottom-full right-0 mb-2 p-1.5 rounded-xl cyber-glass-card border border-cyan-500/40 shadow-2xl min-w-[90px] z-50 flex flex-col gap-0.5"
+                        className="absolute bottom-full right-0 mb-2 p-1.5 rounded-xl bg-slate-950/95 backdrop-blur-xl border border-slate-700/80 shadow-2xl min-w-[90px] z-50 flex flex-col gap-0.5"
                       >
                         {SPEED_OPTIONS.map((speed) => (
                           <button

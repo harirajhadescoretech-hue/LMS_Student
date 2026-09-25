@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { downloadFileDirectly } from '../../utils/downloadHelper';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDate, formatDisplayDateTime } from '../../utils/dateTimeUtils';
 
 interface Student {
   courses: any;
@@ -537,7 +538,7 @@ const StudentManager: React.FC = () => {
                       value={firstName} 
                       onChange={(e) => setFirstName(e.target.value)}
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="John"
+                      placeholder="Enter first name"
                       required
                     />
                   </div>
@@ -549,7 +550,7 @@ const StudentManager: React.FC = () => {
                       value={lastName} 
                       onChange={(e) => setLastName(e.target.value)}
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="Doe"
+                      placeholder="Enter last name"
                       required
                     />
                   </div>
@@ -565,7 +566,7 @@ const StudentManager: React.FC = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       autoComplete="off"
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="student@apex.com"
+                      placeholder="Enter student email address"
                       required
                     />
                   </div>
@@ -577,7 +578,7 @@ const StudentManager: React.FC = () => {
                       onChange={(e) => setPhone(e.target.value)}
                       autoComplete="off"
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="+15550199"
+                      placeholder="Enter contact phone number"
                     />
                   </div>
                 </div>
@@ -593,7 +594,7 @@ const StudentManager: React.FC = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         autoComplete="new-password"
                         className="w-full h-10 px-3 pr-10 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                        placeholder="Defaults to: apex123"
+                        placeholder="Enter password or leave blank for default"
                       />
                       <button
                         type="button"
@@ -612,7 +613,7 @@ const StudentManager: React.FC = () => {
                       value={profilePhoto} 
                       onChange={(e) => setProfilePhoto(e.target.value)}
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="https://R2-link/photo.png"
+                      placeholder="Enter profile photo URL"
                     />
                   </div>
                 </div>
@@ -1282,7 +1283,7 @@ const StudentManager: React.FC = () => {
                         ) : (
                           progressData.logins?.map((log: any, i: number) => (
                             <div key={i} className="p-2.5 flex items-center justify-between hover:bg-muted/10 font-mono text-[10px]">
-                              <span>{new Date(log.timestamp).toLocaleString()}</span>
+                              <span>{formatDisplayDateTime(log.timestamp)}</span>
                               <span className="bg-muted px-2 py-0.5 rounded text-foreground">{log.ip_address || 'Unknown'}</span>
                             </div>
                           ))
@@ -1310,7 +1311,7 @@ const StudentManager: React.FC = () => {
                             <label className="block text-[10px] text-muted-foreground mb-1">Status</label>
                             <select 
                               value={attStatus} 
-                              onChange={(e: any) => setAttStatus(e.target.value)}
+                              onChange={(e: any) => setAttStatus(e.target.value)} 
                               className="w-full h-8 px-2 bg-muted border border-border rounded-lg outline-none"
                             >
                               <option value="PRESENT">Present</option>
@@ -1350,7 +1351,7 @@ const StudentManager: React.FC = () => {
                           ) : (
                             progressData.attendance?.map((att: any, i: number) => (
                               <div key={i} className="p-2.5 flex items-center justify-between hover:bg-muted/10">
-                                <span className="font-mono">{att.date}</span>
+                                <span className="font-mono">{formatDisplayDate(att.date)}</span>
                                 <span className={`px-2 py-0.5 rounded text-[9px] uppercase font-semibold ${att.status === 'PRESENT' ? 'bg-emerald-500/10 text-emerald-500' : att.status === 'LATE' ? 'bg-amber-500/10 text-amber-500' : 'bg-destructive/10 text-destructive'}`}>
                                   {att.status}
                                 </span>

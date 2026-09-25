@@ -1,5 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+# pyrefly: ignore [untyped-import]
+from django.db.models import Q
 from apps.modules.models import Module
 from apps.modules.serializers import ModuleSerializer
 from apps.core.permissions import IsSuperAdminOrStaff
@@ -28,6 +30,7 @@ class ModuleViewSet(viewsets.ModelViewSet):
         user = request.user
         from apps.users.models import CustomUser
         if not isinstance(user, CustomUser):
+            # pyrefly: ignore [missing-attribute]
             return Module.objects.none()
             
         if user.role == 'STUDENT':
@@ -36,24 +39,29 @@ class ModuleViewSet(viewsets.ModelViewSet):
             staff = (profile.assigned_staff or profile.assigned_live_staff) if profile else None
             staff_cat = getattr(getattr(staff, 'staff_profile', None), 'category', None)
             
+            # pyrefly: ignore [missing-attribute]
             qs = Module.objects.filter(course__is_published=True)
             if student_courses or staff_cat or staff:
-                from django.db.models import Q
-                filters = Q()
+                filters = Q(course__is_mentoring_track=True)
                 if student_courses:
                     filters |= Q(course__in=student_courses)
                 if staff_cat:
                     filters |= Q(course__category=staff_cat)
                 if staff:
-                    filters |= Q(course__mentor=staff)
+                    filters |= Q(course__mentor=staff) | Q(course__created_by=staff)
                 qs = qs.filter(filters).distinct()
         elif user.role == 'STAFF':
             category = getattr(user, 'staff_profile', None) and user.staff_profile.category
+            # Allow staff to see modules of courses in their category,
+            # AND courses they created (e.g. mentoring tracks), AND courses where they are the mentor
+            staff_filters = Q(course__created_by=user)
             if category:
-                qs = Module.objects.filter(course__category=category)
-            else:
-                qs = Module.objects.all()
+                staff_filters |= Q(course__category=category)
+            staff_filters |= Q(course__mentor=user)
+            # pyrefly: ignore [missing-attribute]
+            qs = Module.objects.filter(staff_filters)
         else:
+            # pyrefly: ignore [missing-attribute]
             qs = Module.objects.all()
 
         if course_id:

@@ -13,17 +13,19 @@ interface CalendarEvent {
 }
 
 import { useQuery } from '@tanstack/react-query';
+import { formatDisplayDate, formatDisplayTime } from '../../utils/dateTimeUtils';
 
 const CalendarView: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDayEvents, setSelectedDayEvents] = useState<CalendarEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const liveMode = localStorage.getItem('studentLiveMode') === 'true';
 
   const { data: events = [] } = useQuery<CalendarEvent[]>({
-    queryKey: ['student-calendar-events'],
+    queryKey: ['student-calendar-events', liveMode],
     placeholderData: (prev) => prev,
     queryFn: async () => {
-      const res = await api.get('courses/live/');
+      const res = await api.get(`courses/live/?live_mode=${liveMode}`);
       const eventsList: CalendarEvent[] = [];
       res.data.forEach((live: any) => {
         eventsList.push({
@@ -74,10 +76,10 @@ const CalendarView: React.FC = () => {
       {/* 🗓️ Left Column - Calendar Layout (66% width) */}
       <div className="lg:col-span-2 cyber-glass-card p-5 rounded-2xl shadow-sm space-y-4">
         {/* Navigation header */}
-        <div className="flex items-center justify-between border-b border-cyan-500/20 pb-3">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
           <div className="flex items-center gap-2">
-            <Calendar className="text-cyan-400" size={16} />
-            <h3 className="font-bold text-sm text-white">
+            <Calendar className="text-emerald-600" size={16} />
+            <h3 className="font-bold text-sm text-slate-900">
               {monthNames[month]} {year}
             </h3>
           </div>
@@ -147,34 +149,34 @@ const CalendarView: React.FC = () => {
 
       {/* 🗓️ Right Column - Selected Day details (33% width) */}
       <div className="cyber-glass-card p-5 rounded-2xl shadow-sm space-y-4">
-        <h3 className="text-xs font-bold border-b border-cyan-500/20 pb-3 text-white">
-          {selectedDate ? `Tasks for ${selectedDate.toLocaleDateString()}` : 'Select a Date to View Tasks'}
+        <h3 className="text-xs font-bold border-b border-slate-200 pb-3 text-slate-900">
+          {selectedDate ? `Tasks for ${formatDisplayDate(selectedDate.toISOString())}` : 'Select a Date to View Tasks'}
         </h3>
 
         <div className="space-y-3">
           {selectedDayEvents.map(event => (
             <div
               key={`${event.type}-${event.id}`}
-              className="p-3 border rounded-xl space-y-1.5 transition-all bg-blue-500/5 border-blue-500/20"
+              className="p-3 border rounded-xl space-y-1.5 transition-all bg-blue-500/5 border-blue-500/20 shadow-xs"
             >
               <div className="flex items-center justify-between">
-                <span className="text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/10 text-blue-500">
+                <span className="text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-700 border border-blue-500/30">
                   Doubt Session
                 </span>
-                <div className="flex items-center gap-1 text-[9px] text-muted-foreground font-semibold">
+                <div className="flex items-center gap-1 text-[9px] text-slate-600 font-semibold">
                   <Clock size={10} />
-                  <span>{new Date(event.datetime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span>{formatDisplayTime(event.datetime)}</span>
                 </div>
               </div>
-              <h4 className="font-bold text-xs leading-snug">{event.title}</h4>
-              <p className="text-[10px] text-muted-foreground font-medium">{event.course_title}</p>
+              <h4 className="font-bold text-xs leading-snug text-slate-900">{event.title}</h4>
+              <p className="text-[10px] text-slate-600 font-medium">{event.course_title}</p>
               
               {event.type === 'LIVE_CLASS' && event.url && (
                 <a
                   href={event.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[10px] text-primary hover:underline font-bold block pt-1"
+                  className="text-[10px] text-emerald-700 hover:text-emerald-800 font-bold block pt-1"
                 >
                   Join Room &rarr;
                 </a>

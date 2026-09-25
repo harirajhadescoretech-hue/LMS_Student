@@ -3,6 +3,7 @@ import { Megaphone, Plus, Trash2, X, Send, Clock, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../../services/api';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface Announcement {
   id: number;
@@ -115,7 +116,7 @@ export const AnnouncementsTab: React.FC = () => {
                 <Users size={10} />
                 {ann.scope}
               </span>
-              <span className="flex items-center gap-0.5"><Clock size={10} /> {new Date(ann.created_at).toLocaleString()}</span>
+              <span className="flex items-center gap-0.5"><Clock size={10} /> {formatDisplayDateTime(ann.created_at)}</span>
             </div>
 
             <h3 className="font-extrabold text-sm flex items-center gap-1.5 text-foreground">
@@ -146,7 +147,7 @@ export const AnnouncementsTab: React.FC = () => {
               <form onSubmit={handleCreate} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Alert Title *</label>
-                  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required placeholder="e.g. Schedule Alterations" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required placeholder="Enter alert title" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
@@ -168,7 +169,7 @@ export const AnnouncementsTab: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Message Content *</label>
-                  <textarea value={content} onChange={(e) => setContent(e.target.value)} required rows={4} placeholder="Describe the notice..." className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
+                  <textarea value={content} onChange={(e) => setContent(e.target.value)} required rows={4} placeholder="Enter announcement message content..." className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
                 </div>
                 <button type="submit" disabled={isSending} className="w-full py-2.5 bg-primary text-primary-foreground font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-primary/10 disabled:opacity-50">
                   <Send size={12} />

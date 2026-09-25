@@ -9,7 +9,7 @@ import {
   Users, BookOpen, Layers, Video, FileCheck, Award, 
   LogOut, UserCheck, Film, Crown,
   X, Home, FileText, MessageSquare,
-  HelpCircle, BarChart2, Mail, Calendar, FileEdit
+  HelpCircle, BarChart2, Mail, Calendar, FileEdit, ChevronRight
 } from 'lucide-react';
 
 
@@ -240,35 +240,38 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
         />
       )}
 
-      {/* Sidebar container — Dark Emerald Glass (Menu Bar stays dark) */}
+      {/* Sidebar container — Deep Oceanic Teal (Sample UI Mockup) */}
       <aside className={`
         fixed bottom-0 top-0 left-0 z-50 flex w-72 flex-col
-        admin-glass-sidebar dark text-slate-100 transition-transform duration-300 ease-in-out
+        admin-glass-sidebar text-slate-100 transition-transform duration-300 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        {/* Header - Centered Logo & 3-Line Branding */}
-        <div className="relative flex flex-col items-center justify-center text-center pt-5 pb-4 px-4 border-b border-slate-800/80">
+        {/* Header - Horizontal Brand Lockup (Sample UI Mockup) */}
+        <div className="relative flex items-center gap-3 pt-5 pb-5 px-5 border-b border-teal-900/40">
           <button 
             onClick={() => setSidebarOpen(false)}
-            className="absolute top-3 right-3 rounded-lg p-1.5 hover:bg-white/10 text-slate-400 hover:text-white lg:hidden"
+            className="absolute top-4 right-3 rounded-lg p-1.5 hover:bg-white/10 text-teal-300 hover:text-white lg:hidden"
           >
             <X size={18} />
           </button>
 
           {/* Logo Emblem */}
-          <div className="relative flex items-center justify-center h-16 w-16 mb-2">
+          <div className="p-1 rounded-xl bg-white/10 border border-teal-400/20 shadow-sm shrink-0">
             <img 
               src="/logo.png?v=3" 
               alt="Hadescore Logo" 
-              className="h-14 w-14 object-contain drop-shadow-[0_0_14px_rgba(6,182,212,0.6)] relative z-10 hover:scale-105 transition-transform"
+              className="h-9 w-9 object-contain drop-shadow-[0_0_10px_rgba(6,182,212,0.4)]"
             />
           </div>
 
           {/* Typography — HADESCORE */}
-          <div className="pt-0.5">
-            <h2 className="font-display font-black text-sm tracking-wider uppercase text-white leading-tight">
+          <div>
+            <h2 className="font-display font-black text-[15px] tracking-wider uppercase text-white leading-tight">
               HADESCORE
             </h2>
+            <p className="text-[11px] font-semibold text-teal-300/80 tracking-wide mt-0.5">
+              Learn • Build • Grow
+            </p>
           </div>
         </div>
 
@@ -289,42 +292,47 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                   }
                 }}
                 className={`
-                  flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all duration-200 group relative
+                  flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 group relative
                   ${active 
-                    ? 'admin-active-nav font-extrabold text-emerald-300' 
-                    : 'text-slate-300 hover:text-white hover:bg-slate-800/60 hover:border hover:border-slate-700/60'}
+                    ? 'bg-[#1b7b7c] text-white font-bold shadow-md shadow-teal-950/40' 
+                    : 'text-[#a8cbcf] hover:text-white hover:bg-white/10'}
                 `}
               >
-                <Icon size={17} className={`transition-transform duration-200 group-hover:scale-110 ${active ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'text-slate-400'}`} />
-                <span>{item.label}</span>
-                {active && (
-                  <span className="absolute right-2.5 h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-                )}
+                <Icon size={17} className={`transition-transform duration-200 group-hover:scale-105 ${active ? 'text-white' : 'text-[#80a9af] group-hover:text-white'}`} />
+                <span className="tracking-wide">{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
         {/* Footer actions */}
-        <div className="p-4 border-t border-slate-800/80 space-y-2">
+        <div className="p-3 border-t border-teal-900/40 space-y-2">
           {user?.role === 'SUPER_ADMIN' && (
             <button
               onClick={toggleLiveClassMode}
-              className={`flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-95 shadow-sm ${
-                isLiveClassMode 
-                  ? 'text-white bg-violet-600 hover:bg-violet-700 shadow-violet-500/25 border border-violet-500/40' 
-                  : 'text-violet-300 bg-violet-500/15 border border-violet-500/30 hover:bg-violet-500/25'
-              }`}
+              className="flex w-full items-center justify-between px-3.5 py-2.5 rounded-2xl bg-[#044350]/80 hover:bg-[#065363] border border-teal-500/25 text-white transition-all active:scale-[0.98] shadow-sm text-left group"
             >
-              <Video size={15} />
-              <span>{isLiveClassMode ? 'Exit Live Class Mode' : 'Live Class Mentoring'}</span>
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-xl bg-teal-500/20 text-teal-300">
+                  <Video size={16} />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-white leading-tight">
+                    {isLiveClassMode ? 'Exit Live Class Mode' : 'Live Class Mentoring'}
+                  </p>
+                  <p className="text-[10px] text-teal-300/80 font-medium leading-tight mt-0.5">
+                    Join • Learn • Grow
+                  </p>
+                </div>
+              </div>
+              <ChevronRight size={15} className="text-teal-400 group-hover:translate-x-0.5 transition-transform" />
             </button>
           )}
           <button
             onClick={handleLogout}
-            className="flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:text-white hover:bg-red-500/20 hover:border-red-500/40 border border-transparent transition-all active:scale-95"
+            className="flex w-full items-center gap-2.5 px-3.5 py-2 rounded-xl text-xs font-bold text-[#a8cbcf] hover:text-white hover:bg-red-500/20 transition-all active:scale-95"
           >
-            <LogOut size={15} />
+            <LogOut size={16} />
             <span>Sign Out</span>
           </button>
         </div>

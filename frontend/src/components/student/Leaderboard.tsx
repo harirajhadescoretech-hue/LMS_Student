@@ -51,8 +51,8 @@ const Leaderboard: React.FC = () => {
         {/* 🏆 3D Animated Podium Display (4 Columns) */}
         {board.length > 0 && (
           <div className="lg:col-span-5 p-4 rounded-2xl cyber-glass-card shadow-2xs space-y-3">
-            <h3 className="font-extrabold text-xs text-white flex items-center gap-1.5 border-b border-cyan-500/20 pb-2">
-              <Crown size={14} className="text-amber-400" />
+            <h3 className="font-extrabold text-xs text-slate-900 flex items-center gap-1.5 border-b border-emerald-500/20 pb-2">
+              <Crown size={14} className="text-amber-500" />
               <span>Top 3 Champions</span>
             </h3>
 
@@ -116,15 +116,15 @@ const Leaderboard: React.FC = () => {
 
         {/* Rankings list table (7 Columns) */}
         <div className={`${board.length > 0 ? 'lg:col-span-7' : 'lg:col-span-12'} rounded-2xl cyber-glass-card p-4 shadow-2xs space-y-2.5`}>
-          <h3 className="text-xs font-black text-white border-b border-cyan-500/20 pb-2 flex items-center gap-1.5">
-            <Medal size={14} className="text-cyan-400" />
+          <h3 className="text-xs font-black text-slate-900 border-b border-emerald-500/20 pb-2 flex items-center gap-1.5">
+            <Medal size={14} className="text-emerald-600" />
             <span>Global Rankings Directory</span>
           </h3>
           
           <div className="overflow-x-auto max-h-[380px] overflow-y-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-border/60 text-muted-foreground uppercase font-bold text-[9px] tracking-wider">
+                <tr className="border-b border-slate-200 text-slate-500 uppercase font-bold text-[9px] tracking-wider">
                   <th className="py-2 px-2.5 w-12">Rank</th>
                   <th className="py-2 px-2.5">Student</th>
                   <th className="py-2 px-2.5 text-center">Lessons</th>
@@ -132,23 +132,23 @@ const Leaderboard: React.FC = () => {
                   <th className="py-2 px-2.5 text-right">Score</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/40">
+              <tbody className="divide-y divide-slate-100">
                 {board.map((student, index) => {
                   const rank = index + 1;
                   return (
-                    <tr key={student.email} className={`hover:bg-muted/30 transition-colors ${rank <= 3 ? 'font-bold bg-cyan-500/5' : ''}`}>
-                      <td className="py-2 px-2.5 font-mono font-bold text-[11px]">
+                    <tr key={student.email} className={`hover:bg-slate-50 transition-colors ${rank <= 3 ? 'font-bold bg-emerald-50/50' : ''}`}>
+                      <td className="py-2 px-2.5 font-mono font-bold text-[11px] text-slate-800">
                         {rank === 1 ? '🥇 1' : rank === 2 ? '🥈 2' : rank === 3 ? '🥉 3' : `#${rank}`}
                       </td>
                       <td className="py-2 px-2.5">
                         <div>
-                          <h4 className="text-xs font-bold text-foreground truncate max-w-[140px]">{student.name}</h4>
-                          <span className="text-[9px] text-muted-foreground truncate block max-w-[140px]">{student.email}</span>
+                          <h4 className="text-xs font-bold text-slate-900 truncate max-w-[140px]">{student.name}</h4>
+                          <span className="text-[9px] text-slate-500 truncate block max-w-[140px]">{student.email}</span>
                         </div>
                       </td>
-                      <td className="py-2 px-2.5 text-center font-medium text-muted-foreground">{student.lessons_completed}</td>
-                      <td className="py-2 px-2.5 text-center font-medium text-muted-foreground">{student.quizzes_passed}</td>
-                      <td className="py-2 px-2.5 text-right font-mono font-black text-cyan-400">{student.score} pts</td>
+                      <td className="py-2 px-2.5 text-center font-medium text-slate-600">{student.lessons_completed}</td>
+                      <td className="py-2 px-2.5 text-center font-medium text-slate-600">{student.quizzes_passed}</td>
+                      <td className="py-2 px-2.5 text-right font-mono font-black text-emerald-700">{student.score} pts</td>
                     </tr>
                   );
                 })}

@@ -6,7 +6,7 @@ from apps.courses.models import Course, LiveClass
 from apps.categories.models import Category
 from apps.courses.serializers import CourseSerializer, LiveClassSerializer
 from apps.categories.serializers import CategorySerializer
-# pyrefly: ignore [missing-import]
+# pyrefly: ignore [missing-import, untyped-import]
 from django.db.models import Q, Count
 from apps.core.permissions import IsSuperAdminOrStaff, IsSuperAdmin
 from apps.core.models import AuditLog
@@ -29,6 +29,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         cat_type = self.request.data.get('category_type', 'COURSE')
         category = serializer.save(category_type=cat_type)
+        # pyrefly: ignore [missing-attribute]
         AuditLog.objects.create(
             user=self.request.user,
             action=f"Created course category: {category.name}",
@@ -37,6 +38,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         category = serializer.save()
+        # pyrefly: ignore [missing-attribute]
         AuditLog.objects.create(
             user=self.request.user,
             action=f"Updated course category: {category.name}",
@@ -46,6 +48,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         name = instance.name
         instance.delete()
+        # pyrefly: ignore [missing-attribute]
         AuditLog.objects.create(
             user=self.request.user,
             action=f"Deleted course category: {name}",
@@ -64,6 +67,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         user = self.request.user
         from apps.users.models import CustomUser
         if not isinstance(user, CustomUser):
+            # pyrefly: ignore [missing-attribute]
             return Course.objects.none()
         
         # Enforce Course Assignment & Mentor Rule for students
@@ -73,6 +77,7 @@ class CourseViewSet(viewsets.ModelViewSet):
             staff = (profile.assigned_live_staff if live_mode else (profile.assigned_staff or profile.assigned_live_staff)) if profile else None
             staff_cat = getattr(getattr(staff, 'staff_profile', None), 'category', None)
             
+            # pyrefly: ignore [missing-attribute]
             qs = Course.objects.filter(is_published=True)
             is_mentoring_track = self.request.query_params.get('is_mentoring_track')
             if is_mentoring_track is not None:
@@ -81,28 +86,35 @@ class CourseViewSet(viewsets.ModelViewSet):
                 qs = qs.filter(is_mentoring_track=live_mode)
             
             if profile:
-                # pyrefly: ignore [missing-import]
+                # pyrefly: ignore [missing-import, untyped-import]
                 from django.db.models import Q
                 filters = Q(enrolled_students=profile)
                 if staff_cat:
                     filters |= Q(category=staff_cat)
                 if staff:
-                    filters |= Q(mentor=staff)
+                    filters |= Q(mentor=staff) | Q(created_by=staff)
+                if live_mode or (is_mentoring_track and is_mentoring_track.lower() == 'true'):
+                    filters |= Q(is_mentoring_track=True)
                 return qs.filter(filters).select_related('category', 'mentor', 'created_by').distinct()
             return qs.select_related('category', 'mentor', 'created_by').all()
         
         # For staff and admin
+        # pyrefly: ignore [missing-attribute]
         qs = Course.objects.select_related('category', 'mentor', 'created_by').all()
         is_mentoring_track = self.request.query_params.get('is_mentoring_track')
         if is_mentoring_track is not None:
             qs = qs.filter(is_mentoring_track=(is_mentoring_track.lower() == 'true'))
             
-        # Enforce Category Rule for staff
+        # Enforce Category Rule for staff, but always include courses created or mentored by this staff user
         if user.role == 'STAFF':
-            category = getattr(user, 'staff_profile', None) and user.staff_profile.category
+            # pyrefly: ignore [missing-import, untyped-import]
+            from django.db.models import Q
+            profile = getattr(user, 'staff_profile', None)
+            category = getattr(profile, 'category', None)
+            filters = Q(created_by=user) | Q(mentor=user)
             if category:
-                return qs.filter(category=category)
-            return qs
+                filters |= Q(category=category)
+            return qs.filter(filters).distinct()
             
         return qs
 
@@ -113,22 +125,28 @@ class CourseViewSet(viewsets.ModelViewSet):
             from apps.lessons.models import Lesson, LessonProgress
             from apps.quizzes.models import Quiz, QuizAttempt
             from apps.assignments.models import Assignment, AssignmentSubmission
-            # pyrefly: ignore [missing-import]
+            # pyrefly: ignore [missing-import, untyped-import]
             from django.db.models import Count
             
             courses = self.filter_queryset(self.get_queryset())
             course_ids = list(courses.values_list('id', flat=True))
             
             # 1. Total counts per course
+            # pyrefly: ignore [missing-attribute]
             lesson_counts = dict(Lesson.objects.filter(module__course_id__in=course_ids).values('module__course_id').annotate(cnt=Count('id')).values_list('module__course_id', 'cnt'))
+            # pyrefly: ignore [missing-attribute]
             quiz_counts = dict(Quiz.objects.filter(module__course_id__in=course_ids).values('module__course_id').annotate(cnt=Count('id')).values_list('module__course_id', 'cnt'))
+            # pyrefly: ignore [missing-attribute]
             assignment_counts = dict(Assignment.objects.filter(Q(course_id__in=course_ids) | Q(module__course_id__in=course_ids)).filter(Q(students__isnull=True) | Q(students=user)).values('module__course_id').annotate(cnt=Count('id')).values_list('module__course_id', 'cnt'))
             
             # 2. Completed items per course for current student
+            # pyrefly: ignore [missing-attribute]
             completed_lessons = dict(LessonProgress.objects.filter(student=user, lesson__module__course_id__in=course_ids, completed=True).values('lesson__module__course_id').annotate(cnt=Count('id')).values_list('lesson__module__course_id', 'cnt'))
             
+            # pyrefly: ignore [missing-attribute]
             passed_quizzes = dict(QuizAttempt.objects.filter(student=user, quiz__module__course_id__in=course_ids).values('quiz__module__course_id').annotate(cnt=Count('quiz', distinct=True)).values_list('quiz__module__course_id', 'cnt'))
             
+            # pyrefly: ignore [missing-attribute]
             submitted_assignments = dict(AssignmentSubmission.objects.filter(student=user, assignment__in=Assignment.objects.filter(Q(course_id__in=course_ids) | Q(module__course_id__in=course_ids)).filter(Q(students__isnull=True) | Q(students=user))).values('assignment__module__course_id').annotate(cnt=Count('assignment', distinct=True)).values_list('assignment__module__course_id', 'cnt'))
             
             context['precomputed_progress'] = {
@@ -152,6 +170,7 @@ class CourseViewSet(viewsets.ModelViewSet):
                     save_kwargs['category'] = category
         
         course = serializer.save(**save_kwargs)
+        # pyrefly: ignore [missing-attribute]
         AuditLog.objects.create(
             user=user,
             action=f"Created Course: {course.title}",
@@ -160,6 +179,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         course = serializer.save()
+        # pyrefly: ignore [missing-attribute]
         AuditLog.objects.create(
             user=self.request.user,
             action=f"Updated Course details: {course.title}",
@@ -169,6 +189,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         title = instance.title
         instance.delete()
+        # pyrefly: ignore [missing-attribute]
         AuditLog.objects.create(
             user=self.request.user,
             action=f"Deleted Course: {title}",
@@ -186,9 +207,10 @@ class LiveClassViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         from apps.users.models import CustomUser
-        # pyrefly: ignore [missing-import]
+        # pyrefly: ignore [missing-import, untyped-import]
         from django.db.models import Q
         if not isinstance(user, CustomUser):
+            # pyrefly: ignore [missing-attribute]
             return LiveClass.objects.none()
         
         query_params = getattr(self.request, 'query_params', getattr(self.request, 'GET', {}))
@@ -201,6 +223,7 @@ class LiveClassViewSet(viewsets.ModelViewSet):
             if live_mode_param == 'true':
                 # Live Mentoring Mode: ONLY sessions for mentoring tracks or standalone live sessions
                 live_staff = profile.assigned_live_staff if profile else None
+                # pyrefly: ignore [missing-attribute]
                 qs = LiveClass.objects.filter(
                     Q(course__is_mentoring_track=True) | Q(course__isnull=True)
                 )
@@ -214,7 +237,9 @@ class LiveClassViewSet(viewsets.ModelViewSet):
                 # Course Doubt Clearing Mode: MUST be enrolled in that specific course and NOT a mentoring track
                 # pyrefly: ignore [missing-attribute]
                 if not student_courses.exists():
+                    # pyrefly: ignore [missing-attribute]
                     return LiveClass.objects.none()
+                # pyrefly: ignore [missing-attribute]
                 qs = LiveClass.objects.filter(
                     course__is_published=True,
                     course__in=student_courses,
@@ -227,6 +252,7 @@ class LiveClassViewSet(viewsets.ModelViewSet):
 
             else:
                 # Default fallback
+                # pyrefly: ignore [missing-attribute]
                 qs = LiveClass.objects.filter(
                     Q(course__in=student_courses, course__is_published=True) |
                     Q(created_by__role='STAFF', students=user)
@@ -235,6 +261,7 @@ class LiveClassViewSet(viewsets.ModelViewSet):
 
         if user.role == 'STAFF':
             # Staff members view live classes created by themselves OR targeted to their assigned mentees
+            # pyrefly: ignore [missing-attribute]
             qs = LiveClass.objects.filter(
                 Q(created_by=user) | 
                 Q(students__student_profile__assigned_live_staff=user) |
@@ -247,6 +274,7 @@ class LiveClassViewSet(viewsets.ModelViewSet):
             return qs.select_related('course', 'category', 'created_by').prefetch_related('students').distinct()
             
         # SUPER_ADMIN:
+        # pyrefly: ignore [missing-attribute]
         qs = LiveClass.objects.select_related('course', 'category', 'created_by').prefetch_related('students').all()
         if live_mode_param == 'true':
             # Live Mentoring Mode: ONLY sessions for mentoring tracks or standalone live sessions
@@ -269,6 +297,36 @@ class LiveClassViewSet(viewsets.ModelViewSet):
             print("============================================================\n")
         return super().create(request, *args, **kwargs)
 
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', True)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if not serializer.is_valid():
+            print("\n============================================================")
+            print("LIVE CLASS UPDATE VALIDATION ERROR:")
+            print(serializer.errors)
+            print("============================================================\n")
+            return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        self.perform_update(serializer)
+        return response.Response(serializer.data)
+
+    def perform_update(self, serializer):
+        live_class = serializer.save()
+        if hasattr(serializer, 'save_m2m'):
+            try:
+                serializer.save_m2m()
+            except Exception:
+                pass
+        
+        user = self.request.user
+        course_info = f"for Course '{live_class.course.title}'" if live_class.course else "without Course track"
+        # pyrefly: ignore [missing-attribute]
+        AuditLog.objects.create(
+            user=user,
+            action=f"Updated Live Class '{live_class.title}' {course_info}",
+            ip_address=self.request.META.get('REMOTE_ADDR')
+        )
+
     def perform_create(self, serializer):
         user = self.request.user
         category = getattr(user, 'staff_profile', None) and user.staff_profile.category
@@ -280,6 +338,7 @@ class LiveClassViewSet(viewsets.ModelViewSet):
                 pass
         
         course_info = f"for Course '{live_class.course.title}'" if live_class.course else "without Course track"
+        # pyrefly: ignore [missing-attribute]
         AuditLog.objects.create(
             user=user,
             action=f"Scheduled Live Class '{live_class.title}' {course_info}",
@@ -310,7 +369,8 @@ class LiveClassViewSet(viewsets.ModelViewSet):
                     student_profile__assigned_live_staff=user
                 ).distinct()
         
-        time_str = live_class.scheduled_time.strftime("%b %d, %Y at %I:%M %p") if live_class.scheduled_time else ""
+        from apps.core.emails import format_display_datetime
+        time_str = format_display_datetime(live_class.scheduled_time)
         notif_objs = [
             Notification(
                 recipient=student,
@@ -320,6 +380,7 @@ class LiveClassViewSet(viewsets.ModelViewSet):
             for student in targeted_students
         ]
         if notif_objs:
+            # pyrefly: ignore [missing-attribute]
             Notification.objects.bulk_create(notif_objs)
 
         # Dispatch SMTP emails via non-blocking background thread
@@ -347,12 +408,13 @@ class CourseDiscussionPostViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         from apps.users.models import CustomUser
-        # pyrefly: ignore [missing-import]
+        # pyrefly: ignore [missing-import, untyped-import]
         from django.db.models import Q
         user = self.request.user
         # pyrefly: ignore [missing-attribute]
         course_id = self.request.query_params.get('course')
         live_mode = self.request.query_params.get('live_mode') == 'true'
+        # pyrefly: ignore [missing-attribute]
         qs = CourseDiscussionPost.objects.all().select_related('user').prefetch_related('comments', 'comments__user')
 
         # Domain-scoped filtering
@@ -407,6 +469,7 @@ class CourseDiscussionPostViewSet(viewsets.ModelViewSet):
             
             # 1. Notify standard course assigned mentor
             if user.student_profile.assigned_staff:
+                # pyrefly: ignore [missing-attribute]
                 Notification.objects.create(
                     recipient=user.student_profile.assigned_staff,
                     title="New Student Question",
@@ -415,6 +478,7 @@ class CourseDiscussionPostViewSet(viewsets.ModelViewSet):
             
             # 2. Notify live mentoring assigned mentor
             if user.student_profile.assigned_live_staff:
+                # pyrefly: ignore [missing-attribute]
                 Notification.objects.create(
                     recipient=user.student_profile.assigned_live_staff,
                     title="New Student Question",
@@ -425,6 +489,7 @@ class CourseDiscussionPostViewSet(viewsets.ModelViewSet):
             admins = CustomUser.objects.filter(role='SUPER_ADMIN')
             for admin in admins:
                 if admin != user.student_profile.assigned_staff and admin != user.student_profile.assigned_live_staff:
+                    # pyrefly: ignore [missing-attribute]
                     Notification.objects.create(
                         recipient=admin,
                         title="New Student Question",
@@ -451,12 +516,14 @@ class CourseDiscussionCommentViewSet(viewsets.ModelViewSet):
         user = self.request.user
         # pyrefly: ignore [missing-attribute]
         post_id = self.request.query_params.get('post')
+        # pyrefly: ignore [missing-attribute]
         qs = CourseDiscussionComment.objects.all().select_related('user')
 
         if isinstance(user, CustomUser):
             if user.role == 'STUDENT':
                 qs = qs.filter(post__user=user)
             elif user.role == 'STAFF':
+                # pyrefly: ignore [missing-attribute]
                 qs = CourseDiscussionComment.objects.none() # Staff shouldn't see course discussions
 
         if post_id:
@@ -475,6 +542,7 @@ class CourseDiscussionCommentViewSet(viewsets.ModelViewSet):
         # 1. If a mentor/staff replies, notify the student (owner of the post)
         # pyrefly: ignore [missing-attribute]
         if sender.role in ['STAFF', 'SUPER_ADMIN'] and post.user != sender:
+            # pyrefly: ignore [missing-attribute]
             Notification.objects.create(
                 recipient=post.user,
                 title="New Mentor Response",
@@ -752,6 +820,7 @@ class AITutorView(APIView):
 
         if lesson_id:
             try:
+                # pyrefly: ignore [missing-attribute]
                 lesson = Lesson.objects.get(id=lesson_id)
                 course = lesson.module.course
                 context_text = f"Course Title: {course.title}\nModule Title: {lesson.module.title}\nLesson Title: {lesson.title}\nMain Content/Transcript:\n{lesson.content}\nKnowledge Base / Additional Notes:\n{lesson.additional_notes or ''}"
@@ -760,6 +829,7 @@ class AITutorView(APIView):
         
         if not context_text and course_id:
             try:
+                # pyrefly: ignore [missing-attribute]
                 course = Course.objects.get(id=course_id)
                 context_text = f"Course Title: {course.title}\nDescription:\n{course.description}"
             except Exception:

@@ -72,36 +72,36 @@ const AchievementsBadges: React.FC = () => {
               <Flame className="animate-pulse" size={24} />
             </div>
             <div>
-              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">Study Streak</span>
-              <span className="text-2xl font-black text-white leading-tight">{data.streak} Days</span>
+              <span className="text-[9px] font-black uppercase tracking-wider text-slate-500 block">Study Streak</span>
+              <span className="text-2xl font-black text-slate-900 leading-tight">{data.streak} Days</span>
             </div>
           </div>
-          <span className="text-[9px] font-black text-orange-400 bg-orange-500/15 px-2 py-0.5 rounded-full uppercase border border-orange-500/30">Active</span>
+          <span className="text-[9px] font-black text-orange-600 bg-orange-500/15 px-2 py-0.5 rounded-full uppercase border border-orange-500/30">Active</span>
         </div>
 
         {/* Dynamic Study Metrics */}
         <div className="md:col-span-2 rounded-2xl cyber-glass-card p-3 shadow-2xs grid gap-2 grid-cols-3 items-center">
           <div className="text-center space-y-0.5">
-            <span className="text-[9px] uppercase font-bold text-slate-400 block">Videos Done</span>
-            <span className="text-lg font-black text-white">{data.lessons_completed}</span>
+            <span className="text-[9px] uppercase font-bold text-slate-500 block">Videos Done</span>
+            <span className="text-lg font-black text-slate-900">{data.lessons_completed}</span>
           </div>
 
-          <div className="text-center space-y-0.5 border-x border-cyan-500/20">
-            <span className="text-[9px] uppercase font-bold text-slate-400 block">Quizzes Passed</span>
-            <span className="text-lg font-black text-white">{data.quizzes_passed}</span>
+          <div className="text-center space-y-0.5 border-x border-slate-200">
+            <span className="text-[9px] uppercase font-bold text-slate-500 block">Quizzes Passed</span>
+            <span className="text-lg font-black text-slate-900">{data.quizzes_passed}</span>
           </div>
 
           <div className="text-center space-y-0.5">
-            <span className="text-[9px] uppercase font-bold text-slate-400 block">Deliverables</span>
-            <span className="text-lg font-black text-white">{data.assignments_submitted}</span>
+            <span className="text-[9px] uppercase font-bold text-slate-500 block">Deliverables</span>
+            <span className="text-lg font-black text-slate-900">{data.assignments_submitted}</span>
           </div>
         </div>
       </div>
 
       {/* Badges Milestones Gallery (Dense Grid) */}
       <div className="rounded-2xl cyber-glass-card p-4 shadow-2xs space-y-3">
-        <h3 className="text-xs font-black text-white border-b border-cyan-500/20 pb-2 flex items-center gap-1.5">
-          <Award className="text-cyan-400" size={14} />
+        <h3 className="text-xs font-black text-slate-900 border-b border-emerald-500/20 pb-2 flex items-center gap-1.5">
+          <Award className="text-emerald-600" size={14} />
           <span>Milestones & Achievement Badges</span>
         </h3>
 
@@ -119,28 +119,28 @@ const AchievementsBadges: React.FC = () => {
                 whileHover={badge.unlocked ? { y: -2 } : {}}
                 className={`p-3 rounded-xl border flex gap-3 transition-all duration-200 ${
                   badge.unlocked
-                    ? 'cyber-glass-card border-cyan-400/50 shadow-[0_0_15px_rgba(6,182,212,0.2)] hover:border-cyan-400'
-                    : 'bg-slate-950/60 border-slate-800/80 opacity-40'
+                    ? 'cyber-glass-card border-emerald-500/40 shadow-sm hover:border-emerald-500'
+                    : 'bg-slate-50 border-slate-200 opacity-60'
                 }`}
               >
                 <div
                   className={`h-9 w-9 rounded-xl flex items-center justify-center border shrink-0 shadow-2xs ${
                     badge.unlocked
-                      ? 'bg-gradient-to-br from-cyan-500 to-blue-600 text-white border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]'
-                      : 'bg-slate-900 text-slate-500 border-slate-800'
+                      ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
+                      : 'bg-slate-100 text-slate-400 border-slate-200'
                   }`}
                 >
                   {badge.unlocked ? <Award size={16} /> : <Lock size={14} />}
                 </div>
                 <div className="space-y-0.5 min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-1">
-                    <h4 className="font-extrabold text-xs text-foreground truncate">{badge.title}</h4>
+                    <h4 className="font-extrabold text-xs text-slate-900 truncate">{badge.title}</h4>
                     {badge.unlocked ? (
-                      <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                      <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 border border-emerald-500/30">
                         Earned
                       </span>
                     ) : (
-                      <span className="text-[8px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground">
+                      <span className="text-[8px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
                         Locked
                       </span>
                     )}

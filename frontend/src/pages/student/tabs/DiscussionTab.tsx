@@ -5,6 +5,7 @@ import api from '../../../services/api';
 import toast from 'react-hot-toast';
 import { MessageSquare, Send, Search, HelpCircle, X, Plus, Loader2, Sparkles, User, MessageCircle } from 'lucide-react';
 import { useFormDraft } from '../../../hooks/useFormDraft';
+import { formatDisplayDate } from '../../../utils/dateTimeUtils';
 
 interface UserShort {
   id: number;
@@ -229,7 +230,7 @@ export const DiscussionTab: React.FC = () => {
                     type="text"
                     value={newPostTitle}
                     onChange={(e) => setNewPostTitle(e.target.value)}
-                    placeholder="e.g. How to structure async state in Django?"
+                    placeholder="Enter your question or topic title"
                     className="w-full h-11 px-3.5 bg-muted/30 border border-border/80 rounded-2xl outline-none text-xs"
                   />
                 </div>
@@ -240,7 +241,7 @@ export const DiscussionTab: React.FC = () => {
                     value={newPostContent}
                     onChange={(e) => setNewPostContent(e.target.value)}
                     rows={4}
-                    placeholder="Provide full context, errors, and what you have tried so far..."
+                    placeholder="Enter full context, errors, and details of your question"
                     className="w-full p-3.5 bg-muted/30 border border-border/80 rounded-2xl outline-none text-xs resize-none"
                   />
                 </div>
@@ -290,46 +291,46 @@ export const DiscussionTab: React.FC = () => {
               className="p-4 cyber-glass-card rounded-2xl shadow-2xs space-y-3 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all"
             >
               <div className="space-y-1.5">
-                <div className="flex flex-wrap gap-2 items-center text-[10px] text-muted-foreground">
-                  <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-extrabold uppercase tracking-wider">{post.course_title || 'Apex Course'}</span>
-                  <span>By: <span className="text-foreground font-bold">{post.user_details?.name || post.user_details?.email}</span></span>
+                <div className="flex flex-wrap gap-2 items-center text-[10px] text-slate-600">
+                  <span className="px-2 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-800 font-extrabold uppercase tracking-wider">{post.course_title || 'Apex Course'}</span>
+                  <span>By: <span className="text-slate-900 font-bold">{post.user_details?.name || post.user_details?.email}</span></span>
                   {post.mentor_name && (
                     <>
                       <span>•</span>
-                      <span className="text-emerald-400 font-bold">Mentor: {post.mentor_name}</span>
+                      <span className="text-emerald-700 font-bold">Mentor: {post.mentor_name}</span>
                     </>
                   )}
                   <span>•</span>
-                  <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                  <span>{formatDisplayDate(post.created_at)}</span>
                 </div>
 
-                <h3 className="font-black text-sm text-foreground leading-snug">{post.title}</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-wrap">{post.content}</p>
+                <h3 className="font-black text-sm text-slate-900 leading-snug">{post.title}</h3>
+                <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">{post.content}</p>
               </div>
 
               {/* Comments / Answers */}
-              <div className="pt-2 border-t border-border/50 space-y-2">
+              <div className="pt-2 border-t border-slate-200 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
-                    <MessageSquare size={11} className="text-cyan-400" />
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600 flex items-center gap-1">
+                    <MessageSquare size={11} className="text-teal-700" />
                     <span>Replies ({post.comments?.length || 0})</span>
                   </span>
 
                   <button
                     onClick={() => setActivePostId(activePostId === post.id ? null : post.id)}
-                    className="text-cyan-400 hover:text-cyan-300 font-black text-[11px] cursor-pointer"
+                    className="text-teal-700 hover:text-teal-800 font-black text-[11px] cursor-pointer"
                   >
                     {activePostId === post.id ? 'Close Replies' : 'Reply to Query'}
                   </button>
                 </div>
 
                 {post.comments && post.comments.length > 0 && (
-                  <div className="space-y-2 pl-3 border-l-2 border-cyan-500/30">
+                  <div className="space-y-2 pl-3 border-l-2 border-emerald-500/40">
                     {post.comments.map(c => (
                       <div key={c.id} className="p-2.5 bg-muted/40 rounded-xl space-y-0.5 border border-border/50">
                         <div className="flex items-center justify-between text-[10px]">
                           <span className="font-bold text-foreground">{c.user_details?.name || 'Mentor / Peer'}</span>
-                          <span className="text-muted-foreground">{new Date(c.created_at).toLocaleDateString()}</span>
+                          <span className="text-muted-foreground">{formatDisplayDate(c.created_at)}</span>
                         </div>
                         <p className="text-xs text-muted-foreground">{c.content}</p>
                       </div>
@@ -343,7 +344,7 @@ export const DiscussionTab: React.FC = () => {
                       type="text"
                       value={newCommentContent}
                       onChange={(e) => setNewCommentContent(e.target.value)}
-                      placeholder="Write your reply or clarification..."
+                      placeholder="Enter your reply or clarification"
                       className="flex-1 h-9 px-3 bg-muted/30 border border-border/80 rounded-xl outline-none focus:border-cyan-500 text-xs"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {

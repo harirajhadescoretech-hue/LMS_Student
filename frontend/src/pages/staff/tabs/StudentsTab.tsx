@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDate, formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface Student {
   id: number;
@@ -401,7 +402,7 @@ export const StudentsTab: React.FC = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search students by email or name..."
+            placeholder="Enter student name or email to search..."
             className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl outline-none focus:border-primary/45"
           />
         </div>
@@ -437,7 +438,7 @@ export const StudentsTab: React.FC = () => {
                     </td>
                     <td className="py-3.5 px-4 font-semibold text-muted-foreground">{student.course_duration} Days</td>
                     <td className="py-3.5 px-4 font-mono font-semibold">
-                      {student.end_date ? new Date(student.end_date).toLocaleDateString() : 'N/A'}
+                      {student.end_date ? formatDisplayDate(student.end_date) : 'N/A'}
                     </td>
                     <td className="py-3.5 px-4">
                       <span 
@@ -527,7 +528,7 @@ export const StudentsTab: React.FC = () => {
                       type={showEnrollPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Set custom password or leave blank"
+                      placeholder="Enter custom password or leave blank"
                       className="w-full h-10 px-3 pr-10 bg-muted/40 border border-border rounded-xl outline-none text-sm"
                     />
                     <button
@@ -585,7 +586,7 @@ export const StudentsTab: React.FC = () => {
                       <>
                         <div>
                           <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Custom Certificate Code (Optional)</label>
-                          <input type="text" value={certCode} onChange={(e) => setCertCode(e.target.value)} placeholder="e.g. APEX-CERT-123" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none text-[11px]" />
+                          <input type="text" value={certCode} onChange={(e) => setCertCode(e.target.value)} placeholder="Enter custom certificate code" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none text-[11px]" />
                         </div>
                         <div>
                           <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Upload Certificate File *</label>
@@ -679,7 +680,7 @@ export const StudentsTab: React.FC = () => {
                       <>
                         <div>
                           <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Custom Certificate Code (Optional)</label>
-                          <input type="text" value={certCode} onChange={(e) => setCertCode(e.target.value)} placeholder="e.g. APEX-CERT-123" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none text-[11px]" />
+                          <input type="text" value={certCode} onChange={(e) => setCertCode(e.target.value)} placeholder="Enter custom certificate code" className="w-full h-10 px-3 bg-card border border-border rounded-xl outline-none text-[11px]" />
                         </div>
                         <div>
                           <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Upload Certificate File *</label>
@@ -733,7 +734,7 @@ export const StudentsTab: React.FC = () => {
                       value={newPassword} 
                       onChange={(e) => setNewPassword(e.target.value)} 
                       required 
-                      placeholder="••••••••" 
+                      placeholder="Enter new password" 
                       autoComplete="new-password" 
                       className="w-full h-10 pl-3 pr-10 bg-muted/40 border border-border rounded-xl outline-none" 
                     />
@@ -932,7 +933,7 @@ export const StudentsTab: React.FC = () => {
                                 <span className="font-bold text-foreground">IP: {log.ip_address || 'Localhost'}</span>
                                 <span className="text-[9px] text-muted-foreground block">{log.user_agent}</span>
                               </div>
-                              <span className="font-mono font-semibold text-muted-foreground">{new Date(log.timestamp).toLocaleString()}</span>
+                              <span className="font-mono font-semibold text-muted-foreground">{formatDisplayDateTime(log.timestamp)}</span>
                             </div>
                           ))}
                           {(!profileDetails?.login_history || profileDetails.login_history.length === 0) && (
@@ -947,7 +948,7 @@ export const StudentsTab: React.FC = () => {
                         <div className="divide-y divide-border">
                           {profileDetails?.attendance?.map((att: any) => (
                             <div key={att.id} className="p-3 flex items-center justify-between hover:bg-muted/15">
-                              <span className="font-bold">{new Date(att.date).toLocaleDateString()}</span>
+                              <span className="font-bold">{formatDisplayDate(att.date)}</span>
                               <span className={`text-[9px] uppercase font-bold px-2 py-0.5 rounded ${att.status === 'PRESENT' ? 'bg-emerald-500/10 border border-emerald-500/25 text-emerald-500' : 'bg-destructive/10 border border-destructive/25 text-destructive'}`}>
                                 {att.status}
                               </span>

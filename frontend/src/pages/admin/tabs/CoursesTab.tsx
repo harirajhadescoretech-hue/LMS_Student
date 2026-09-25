@@ -303,11 +303,21 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
       setShowCourseModal(false);
       return { previousCourses };
     },
-    onError: (_err, _variables, context) => {
+    onError: (err: any, _variables, context) => {
       if (context?.previousCourses) {
         queryClient.setQueryData(['courses-list'], context.previousCourses);
       }
-      toast.error('Failed to save course.');
+      const data = err?.response?.data;
+      let msg = 'Failed to save course.';
+      if (data) {
+        if (typeof data === 'string') msg = data;
+        else if (data.detail) msg = data.detail;
+        else if (data.title) msg = `Title: ${Array.isArray(data.title) ? data.title[0] : data.title}`;
+        else if (data.slug) msg = `Slug: ${Array.isArray(data.slug) ? data.slug[0] : data.slug}`;
+        else if (data.description) msg = `Description: ${Array.isArray(data.description) ? data.description[0] : data.description}`;
+        else if (data.category) msg = `Category: ${Array.isArray(data.category) ? data.category[0] : data.category}`;
+      }
+      toast.error(msg);
     },
     onSuccess: () => {
       resetCourseForm();
@@ -956,9 +966,11 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
                           {/* Lessons sub list */}
                           <div className="space-y-2">
                             <div className="flex justify-between items-center">
-                              <span className="font-bold text-muted-foreground block text-[10px] uppercase">Lessons List</span>
+                              <span className="font-bold text-muted-foreground block text-[10px] uppercase">
+                                {isRecordingsMode ? 'Recorded Sessions List' : 'Lessons List'}
+                              </span>
                               <button onClick={() => openCreateLesson(mod.id)} className="text-primary font-bold flex items-center gap-0.5 hover:underline">
-                                <Plus size={11} /> Add Lesson
+                                <Plus size={11} /> {isRecordingsMode ? 'Add Recording' : 'Add Lesson'}
                               </button>
                             </div>
                             <div className="space-y-2">
@@ -1270,7 +1282,7 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
                   <textarea 
                     value={lesNotes} 
                     onChange={(e) => setLesNotes(e.target.value)} 
-                    placeholder="Paste lecture transcript, study notes, Q&A pairs, formulas, or key concepts here to train the AI tutor for this lesson..." 
+                    placeholder="Enter lecture transcript, study notes, Q&A pairs, formulas, or key concepts to train the AI tutor" 
                     rows={3} 
                     className="w-full p-3 bg-muted/40 border border-primary/20 rounded-xl outline-none resize-none text-[11px] placeholder:text-muted-foreground/50" 
                   />
@@ -1472,7 +1484,7 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
                     <h5 className="font-bold text-xs uppercase text-muted-foreground border-b border-border pb-1.5">Add Question</h5>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Question Prompt *</label>
-                      <input type="text" value={qText} onChange={(e) => setQText(e.target.value)} placeholder="e.g. What is Django?" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
+                      <input type="text" value={qText} onChange={(e) => setQText(e.target.value)} placeholder="Enter question prompt" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
                     </div>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Question Type</label>

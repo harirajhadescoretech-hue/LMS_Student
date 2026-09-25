@@ -148,7 +148,7 @@ export const SystemSettingsTab: React.FC = () => {
               </div>
               <div>
                 <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Branding Logo URL Link</label>
-                <input type="url" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="https://..." className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                <input type="url" value={logoUrl} onChange={(e) => setLogoUrl(e.target.value)} placeholder="Enter branding logo image URL" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
               </div>
             </div>
           </div>
@@ -169,7 +169,7 @@ export const SystemSettingsTab: React.FC = () => {
                   type="text" 
                   value={smtpHost} 
                   onChange={(e) => setSmtpHost(e.target.value)} 
-                  placeholder="e.g. smtp.gmail.com or smtp.zoho.com" 
+                  placeholder="Enter SMTP server host" 
                   className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none font-mono text-xs" 
                 />
               </div>
@@ -179,7 +179,7 @@ export const SystemSettingsTab: React.FC = () => {
                   type="number" 
                   value={smtpPort} 
                   onChange={(e) => setSmtpPort(e.target.value)} 
-                  placeholder="587 or 465" 
+                  placeholder="Enter SMTP server port" 
                   className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none font-mono text-xs" 
                 />
               </div>
@@ -192,7 +192,7 @@ export const SystemSettingsTab: React.FC = () => {
                   type="email" 
                   value={smtpUser} 
                   onChange={(e) => setSmtpUser(e.target.value)} 
-                  placeholder="e.g. support@yourcompany.com" 
+                  placeholder="Enter SMTP user email" 
                   className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none font-mono text-xs" 
                 />
               </div>
@@ -202,7 +202,7 @@ export const SystemSettingsTab: React.FC = () => {
                   type="password" 
                   value={smtpPassword} 
                   onChange={(e) => setSmtpPassword(e.target.value)} 
-                  placeholder="16-character App Password" 
+                  placeholder="Enter SMTP password or app key" 
                   autoComplete="current-password"
                   className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none font-mono text-xs" 
                 />
@@ -215,7 +215,7 @@ export const SystemSettingsTab: React.FC = () => {
                 type="text" 
                 value={smtpFromEmail} 
                 onChange={(e) => setSmtpFromEmail(e.target.value)} 
-                placeholder="e.g. Apex LMS Support <support@yourcompany.com>" 
+                placeholder="Enter sender display name and email" 
                 className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none font-mono text-xs" 
               />
               <span className="text-[10px] text-muted-foreground mt-1 block">

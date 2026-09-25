@@ -463,7 +463,7 @@ export const EmailTemplatesTab: React.FC = () => {
               onChange={(e) => handleSubjectChange(e.target.value)}
               required
               className="w-full h-11 px-4 bg-slate-50/80 dark:bg-muted/40 border border-slate-200 dark:border-border rounded-xl outline-none focus:border-primary focus:bg-white dark:focus:bg-card font-semibold text-xs text-slate-800 dark:text-foreground transition-all shadow-xs"
-              placeholder="Enter subject line..."
+              placeholder="Enter subject line"
             />
           </div>
 
@@ -500,7 +500,7 @@ export const EmailTemplatesTab: React.FC = () => {
                 required
                 rows={13}
                 className="w-full p-4 text-xs font-mono bg-slate-50/80 dark:bg-muted/40 border border-slate-200 dark:border-border rounded-xl outline-none resize-y focus:border-primary focus:bg-white dark:focus:bg-card text-slate-800 dark:text-foreground leading-relaxed transition-all shadow-xs"
-                placeholder="Write your email body template here..."
+                placeholder="Enter email body template"
               />
             )}
           </div>

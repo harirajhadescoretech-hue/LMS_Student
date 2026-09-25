@@ -8,6 +8,7 @@ import {
   Crown, Copy, Eye, EyeOff, Lock, CheckCircle, AlertTriangle, X, KeyRound
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { formatDisplayDate } from '../../../utils/dateTimeUtils';
 
 const ROOT_EMAIL = 'hadescore.apex.technologies@gmail.com';
 
@@ -150,17 +151,17 @@ export const AdminManagerTab: React.FC = () => {
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">First Name</label>
               <input className="w-full h-9 px-3 bg-background border border-border rounded-xl text-xs focus:outline-none focus:border-primary/50"
-                placeholder="e.g. Arjun" value={form.first_name} onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))} />
+                placeholder="Enter first name" value={form.first_name} onChange={e => setForm(f => ({ ...f, first_name: e.target.value }))} />
             </div>
             <div className="space-y-1">
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">Last Name</label>
               <input className="w-full h-9 px-3 bg-background border border-border rounded-xl text-xs focus:outline-none focus:border-primary/50"
-                placeholder="e.g. Kumar" value={form.last_name} onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))} />
+                placeholder="Enter last name" value={form.last_name} onChange={e => setForm(f => ({ ...f, last_name: e.target.value }))} />
             </div>
             <div className="space-y-1 col-span-2">
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">Email Address</label>
               <input className="w-full h-9 px-3 bg-background border border-border rounded-xl text-xs focus:outline-none focus:border-primary/50"
-                placeholder="manager@yourcompany.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+                placeholder="Enter email address" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
             </div>
             <div className="space-y-1 col-span-2">
               <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">Password</label>
@@ -168,7 +169,7 @@ export const AdminManagerTab: React.FC = () => {
                 <div className="relative flex-1">
                   <input type={showPass ? 'text' : 'password'}
                     className="w-full h-9 pl-3 pr-8 bg-background border border-border rounded-xl text-xs focus:outline-none focus:border-primary/50"
-                    placeholder="Leave blank for auto-generated" value={form.password}
+                    placeholder="Enter password or leave blank for auto-generated" value={form.password}
                     onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
                   <button onClick={() => setShowPass(v => !v)} type="button"
                     className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
@@ -250,7 +251,7 @@ export const AdminManagerTab: React.FC = () => {
                     </div>
                     <span className="text-[11px] text-muted-foreground font-mono truncate block">{admin.email}</span>
                     <span className="text-[10px] text-muted-foreground/60">
-                      Created: {new Date(admin.date_joined).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      Created: {formatDisplayDate(admin.date_joined)}
                     </span>
                   </div>
                 </div>

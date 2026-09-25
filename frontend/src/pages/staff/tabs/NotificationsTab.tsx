@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../../services/api';
 import toast from 'react-hot-toast';
 import { Bell, Check, RefreshCw, Trash2 } from 'lucide-react';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface Notification {
   id: number;
@@ -89,7 +90,7 @@ export const NotificationsTab: React.FC = () => {
                   </div>
                   <div>
                     <p className={`text-xs ${alert.is_read ? 'text-muted-foreground' : 'text-foreground font-semibold leading-relaxed'}`}>{alert.verb}</p>
-                    <span className="text-[9px] text-muted-foreground mt-0.5 block">{new Date(alert.timestamp).toLocaleString()}</span>
+                    <span className="text-[9px] text-muted-foreground mt-0.5 block">{formatDisplayDateTime(alert.timestamp)}</span>
                   </div>
                 </div>
 

@@ -152,7 +152,7 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ type = 'COURSE' })
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search categories by name..."
+            placeholder="Enter category name to search..."
             className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl outline-none focus:border-primary/45"
           />
         </div>
@@ -209,7 +209,7 @@ export const CategoriesTab: React.FC<CategoriesTabProps> = ({ type = 'COURSE' })
                     value={catName}
                     onChange={(e) => setCatName(e.target.value)}
                     required
-                    placeholder="e.g. Artificial Intelligence"
+                    placeholder="Enter category name"
                     className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none"
                   />
                 </div>

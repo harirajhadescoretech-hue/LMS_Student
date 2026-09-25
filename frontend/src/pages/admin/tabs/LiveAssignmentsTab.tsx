@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface Submission {
   id: number;
@@ -442,7 +443,7 @@ export const LiveAssignmentsTab: React.FC = () => {
                 <div className="space-y-1.5 pt-2 border-t border-border/50">
                   <div className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
                     <Clock size={12} className="text-primary/70" />
-                    <span>Due: {a.due_date ? new Date(a.due_date).toLocaleString() : 'No Due Date'}</span>
+                    <span>Due: {a.due_date ? formatDisplayDateTime(a.due_date) : 'No Due Date'}</span>
                   </div>
                   <div className="flex items-start gap-2 text-[11px] font-medium text-muted-foreground">
                     <Users size={12} className="text-primary/70 shrink-0 mt-0.5" />
@@ -598,7 +599,7 @@ export const LiveAssignmentsTab: React.FC = () => {
                       type="text" 
                       value={gradeInput} 
                       onChange={(e) => setGradeInput(e.target.value)} 
-                      placeholder="e.g. 95/100 or A+" 
+                      placeholder="Enter grade marks or percentage" 
                       className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl font-mono" 
                     />
                   </div>
@@ -610,7 +611,7 @@ export const LiveAssignmentsTab: React.FC = () => {
                     value={feedbackInput} 
                     onChange={(e) => setFeedbackInput(e.target.value)} 
                     rows={3} 
-                    placeholder="Provide constructive feedback for student..." 
+                    placeholder="Enter feedback remarks" 
                     className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none" 
                   />
                 </div>

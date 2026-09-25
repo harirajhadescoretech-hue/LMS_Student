@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toLocalDatetimeInput, toUtcIsoString, formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface Student {
   id: number;
@@ -200,7 +201,7 @@ export const LiveAssignmentsTab: React.FC = () => {
     setEditingAssignment(a);
     setTitle(a.title);
     setDescription(a.description || '');
-    setDueDate(a.due_date ? new Date(a.due_date).toISOString().slice(0,16) : '');
+    setDueDate(toLocalDatetimeInput(a.due_date));
     setFileUrl(a.file_attachment || '');
     setSelectedStudentIds(a.students || []);
     setShowModal(true);
@@ -215,7 +216,7 @@ export const LiveAssignmentsTab: React.FC = () => {
       file_attachment: fileUrl,
       students: selectedStudentIds,
     };
-    if (dueDate) payload.due_date = new Date(dueDate).toISOString();
+    if (dueDate) payload.due_date = toUtcIsoString(dueDate);
 
     saveMutation.mutate(payload);
   };
@@ -526,7 +527,7 @@ export const LiveAssignmentsTab: React.FC = () => {
                 <div className="space-y-1.5 pt-2 border-t border-border/50">
                   <div className="flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
                     <Clock size={12} className="text-primary/70" />
-                    <span>Due: {a.due_date ? new Date(a.due_date).toLocaleString() : 'No Due Date'}</span>
+                    <span>Due: {a.due_date ? formatDisplayDateTime(a.due_date) : 'No Due Date'}</span>
                   </div>
                   <div className="flex items-start gap-2 text-[11px] font-medium text-muted-foreground">
                     <Users size={12} className="text-primary/70 shrink-0 mt-0.5" />
@@ -682,7 +683,7 @@ export const LiveAssignmentsTab: React.FC = () => {
                       type="text" 
                       value={gradeInput} 
                       onChange={(e) => setGradeInput(e.target.value)} 
-                      placeholder="e.g. 95/100 or A+" 
+                      placeholder="Enter grade marks or percentage" 
                       className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl font-mono" 
                     />
                   </div>
@@ -694,7 +695,7 @@ export const LiveAssignmentsTab: React.FC = () => {
                     value={feedbackInput} 
                     onChange={(e) => setFeedbackInput(e.target.value)} 
                     rows={3} 
-                    placeholder="Provide constructive feedback for student..." 
+                    placeholder="Enter feedback remarks" 
                     className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none" 
                   />
                 </div>
@@ -736,12 +737,12 @@ export const LiveAssignmentsTab: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2">
                     <label className="block text-[10px] font-bold uppercase text-muted-foreground mb-1.5">Assignment Title</label>
-                    <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-background border border-border rounded-xl px-4 py-2.5 outline-none focus:border-primary/50 transition-colors" placeholder="e.g. Week 1 Capstone Project" />
+                    <input type="text" value={title} onChange={e => setTitle(e.target.value)} className="w-full bg-background border border-border rounded-xl px-4 py-2.5 outline-none focus:border-primary/50 transition-colors" placeholder="Enter assignment title" />
                   </div>
                   
                   <div className="col-span-2">
                     <label className="block text-[10px] font-bold uppercase text-muted-foreground mb-1.5">Instructions / Description</label>
-                    <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full bg-background border border-border rounded-xl px-4 py-3 outline-none focus:border-primary/50 transition-colors min-h-[80px]" placeholder="Explain what the students need to do..." />
+                    <textarea value={description} onChange={e => setDescription(e.target.value)} className="w-full bg-background border border-border rounded-xl px-4 py-3 outline-none focus:border-primary/50 transition-colors min-h-[80px]" placeholder="Enter assignment description" />
                   </div>
 
                   <div>
@@ -752,7 +753,7 @@ export const LiveAssignmentsTab: React.FC = () => {
                   <div className="col-span-2">
                     <label className="block text-[10px] font-bold uppercase text-muted-foreground mb-1.5">File Attachment (Optional)</label>
                     <div className="flex gap-2">
-                      <input type="url" value={fileUrl} onChange={e => setFileUrl(e.target.value)} className="flex-1 bg-background border border-border rounded-xl px-4 py-2.5 outline-none focus:border-primary/50 transition-colors" placeholder="Link to PDF or resource..." />
+                      <input type="url" value={fileUrl} onChange={e => setFileUrl(e.target.value)} className="flex-1 bg-background border border-border rounded-xl px-4 py-2.5 outline-none focus:border-primary/50 transition-colors" placeholder="Enter PDF or resource URL" />
                       <label className={`flex items-center justify-center px-4 py-2 bg-muted/50 border border-border rounded-xl cursor-pointer hover:bg-muted transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
                         {uploading ? <Loader2 size={16} className="animate-spin text-muted-foreground" /> : <FileText size={16} className="text-muted-foreground" />}
                         <input type="file" className="hidden" onChange={async (e) => {
@@ -784,7 +785,7 @@ export const LiveAssignmentsTab: React.FC = () => {
                     </div>
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={12} />
-                      <input type="text" value={studentSearch} onChange={e => setStudentSearch(e.target.value)} placeholder="Search students..." className="pl-8 pr-3 py-1.5 bg-background border border-border rounded-lg text-xs outline-none focus:border-primary" />
+                      <input type="text" value={studentSearch} onChange={e => setStudentSearch(e.target.value)} placeholder="Enter student name or email to search..." className="pl-8 pr-3 py-1.5 bg-background border border-border rounded-lg text-xs outline-none focus:border-primary" />
                     </div>
                   </div>
 

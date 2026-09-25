@@ -196,12 +196,12 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ onOpenCourse }) => {
         </div>
       ) : filteredCourses.length === 0 ? (
         <div className="rounded-3xl cyber-glass-card p-12 text-center space-y-3">
-          <BookOpen size={36} className="mx-auto text-emerald-400/50" />
-          <h3 className="text-base font-extrabold text-white">No courses match your filter</h3>
-          <p className="text-[11px] max-w-xs mx-auto text-muted-foreground">Try clearing your search query or choosing another domain.</p>
+          <BookOpen size={36} className="mx-auto text-emerald-500/50" />
+          <h3 className="text-base font-extrabold text-slate-900">No courses match your filter</h3>
+          <p className="text-[11px] max-w-xs mx-auto text-slate-500">Try clearing your search query or choosing another domain.</p>
           <button
             onClick={() => { setSearch(''); setCategoryFilter(''); }}
-            className="px-4 py-1.5 bg-slate-900 border border-emerald-500/40 text-emerald-300 font-bold rounded-xl hover:text-white text-xs transition-colors"
+            className="px-4 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs transition-colors shadow-sm"
           >
             Reset Filters
           </button>
@@ -229,27 +229,27 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ onOpenCourse }) => {
 
                 <div className="space-y-2 relative z-10">
                   <div className="flex justify-between items-center gap-2">
-                    <span className="text-[9px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-extrabold uppercase tracking-wider truncate max-w-[130px]">
+                    <span className="text-[9px] px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 font-extrabold uppercase tracking-wider truncate max-w-[130px]">
                       {course.category_name}
                     </span>
                     {!liveMode && (
                       isCompleted ? (
-                        <span className="text-[8px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-black uppercase tracking-wider flex items-center gap-1 shrink-0">
+                        <span className="text-[8px] px-2 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 font-black uppercase tracking-wider flex items-center gap-1 shrink-0">
                           <CheckCircle2 size={9} /> Completed
                         </span>
                       ) : (
-                        <span className="text-[9px] font-mono text-emerald-300 font-black shrink-0">
+                        <span className="text-[9px] font-mono text-emerald-700 font-black shrink-0">
                           {pct}%
                         </span>
                       )
                     )}
                   </div>
 
-                  <h3 className="font-extrabold text-sm text-white leading-tight group-hover:text-emerald-300 transition-colors line-clamp-2">
+                  <h3 className="font-extrabold text-sm text-slate-900 leading-tight group-hover:text-emerald-600 transition-colors line-clamp-2">
                     {course.title}
                   </h3>
 
-                  <p className="text-[11px] text-slate-300/80 leading-relaxed line-clamp-2 font-normal">
+                  <p className="text-[11px] text-slate-600 leading-relaxed line-clamp-2 font-normal">
                     {course.description}
                   </p>
                 </div>
@@ -259,17 +259,17 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ onOpenCourse }) => {
                   {!liveMode && (
                     <div className="space-y-1">
                       <div className="flex justify-between items-center text-[10px]">
-                        <span className="text-slate-400 font-medium">Progress</span>
-                        <span className={`font-mono font-bold ${isCompleted ? 'text-emerald-400' : 'text-emerald-300'}`}>
+                        <span className="text-slate-600 font-medium">Progress</span>
+                        <span className={`font-mono font-bold ${isCompleted ? 'text-emerald-700' : 'text-emerald-600'}`}>
                           {pct}%
                         </span>
                       </div>
-                      <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden border border-slate-700/60 p-0.5">
+                      <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200 p-0.5">
                         <div 
                           className={`h-full rounded-full transition-all duration-700 ${
                             isCompleted 
-                              ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' 
-                              : 'bg-gradient-to-r from-emerald-400 to-teal-400 shadow-[0_0_8px_#34d399]'
+                              ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' 
+                              : 'bg-gradient-to-r from-emerald-500 to-teal-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]'
                           }`}
                           style={{ width: `${Math.max(pct, isCompleted ? 100 : 0)}%` }} 
                         />
@@ -278,8 +278,8 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ onOpenCourse }) => {
                   )}
 
                   <div className="flex items-center justify-between pt-0.5">
-                    <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold">
-                      <PlayCircle size={13} className="text-emerald-400 group-hover:scale-110 transition-transform" />
+                    <div className="flex items-center gap-1.5 text-[10px] text-slate-600 font-semibold">
+                      <PlayCircle size={13} className="text-emerald-600 group-hover:scale-110 transition-transform" />
                       <span>{liveMode ? 'Watch Replay' : isCompleted ? 'Review Content' : 'Open Curriculum'}</span>
                     </div>
 
@@ -289,7 +289,7 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ onOpenCourse }) => {
                           ? 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
                           : pct > 0
                             ? 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-[0_0_10px_rgba(16,185,129,0.3)]'
-                            : 'bg-gradient-to-r from-slate-700 to-slate-800 border border-slate-600/50'
+                            : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500'
                       }`}
                     >
                       <span>{isCompleted ? 'Review' : pct > 0 ? 'Continue' : 'Start'}</span>

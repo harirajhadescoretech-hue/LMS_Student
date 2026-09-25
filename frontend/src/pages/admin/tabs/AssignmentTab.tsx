@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toLocalDatetimeInput, toUtcIsoString, formatDisplayDate } from '../../../utils/dateTimeUtils';
 
 interface Submission {
   id: number;
@@ -208,7 +209,7 @@ export const AssignmentTab: React.FC = () => {
         title: assignTitle,
         description: assignDesc,
         module: Number(selectedModuleId),
-        due_date: assignDueDate ? new Date(assignDueDate).toISOString() : null,
+        due_date: assignDueDate ? toUtcIsoString(assignDueDate) : null,
         file_attachment: assignFileUrl || null
       };
 
@@ -289,7 +290,7 @@ export const AssignmentTab: React.FC = () => {
     setEditingAssignment(assign);
     setAssignTitle(assign.title);
     setAssignDesc(assign.description);
-    setAssignDueDate(assign.due_date ? assign.due_date.slice(0, 16) : '');
+    setAssignDueDate(toLocalDatetimeInput(assign.due_date));
     setAssignFileUrl(assign.file_attachment || '');
     setSelectedModuleId(String(assign.module));
 
@@ -612,7 +613,7 @@ export const AssignmentTab: React.FC = () => {
                       </div>
                     </td>
                     <td className="py-3.5 px-4 font-semibold text-foreground/75 font-mono">
-                      {assign.due_date ? new Date(assign.due_date).toLocaleDateString() : 'No Limit'}
+                      {assign.due_date ? formatDisplayDate(assign.due_date) : 'No Limit'}
                     </td>
                     <td className="py-3.5 px-4">
                       {assign.file_attachment ? (
@@ -777,7 +778,7 @@ export const AssignmentTab: React.FC = () => {
                       type="text" 
                       value={gradeInput} 
                       onChange={(e) => setGradeInput(e.target.value)} 
-                      placeholder="e.g. 95/100 or A+" 
+                      placeholder="Enter grade marks or percentage" 
                       className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl font-mono" 
                     />
                   </div>
@@ -860,7 +861,7 @@ export const AssignmentTab: React.FC = () => {
                     type="text" 
                     value={assignTitle} 
                     onChange={(e) => setAssignTitle(e.target.value)} 
-                    placeholder="e.g. Build Responsive Landing Page" 
+                    placeholder="Enter assignment task title" 
                     className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl font-semibold" 
                   />
                 </div>
@@ -893,7 +894,7 @@ export const AssignmentTab: React.FC = () => {
                       type="text" 
                       value={assignFileUrl} 
                       onChange={(e) => setAssignFileUrl(e.target.value)} 
-                      placeholder="https://... or upload local file" 
+                      placeholder="Enter attachment document URL link or upload file" 
                       className="flex-1 h-10 px-3 bg-muted/40 border border-border rounded-xl font-mono text-xs" 
                     />
                     <label className="h-10 px-3 bg-muted hover:bg-muted/80 rounded-xl border border-border flex items-center justify-center cursor-pointer gap-1 font-bold">

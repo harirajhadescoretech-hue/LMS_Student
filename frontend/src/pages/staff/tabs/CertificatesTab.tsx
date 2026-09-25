@@ -4,6 +4,7 @@ import api from '../../../services/api';
 import toast from 'react-hot-toast';
 import { Award, Trash2, Download, Search, Loader2 } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
+import { formatDisplayDate } from '../../../utils/dateTimeUtils';
 
 interface Certificate {
   id: number;
@@ -65,7 +66,7 @@ export const CertificatesTab: React.FC = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by student, course, or code..."
+            placeholder="Enter student name, course, or certificate code to search..."
             className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl outline-none focus:border-primary/45"
           />
         </div>
@@ -88,7 +89,7 @@ export const CertificatesTab: React.FC = () => {
                     <span className={`text-[9px] font-bold px-2 py-0.5 rounded-lg border uppercase ${cert.is_issued ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20 animate-pulse'}`}>
                       {cert.is_issued ? 'Released' : 'Locked (Pending 100%)'}
                     </span>
-                    <span className="text-[10px] text-muted-foreground">{new Date(cert.issued_at).toLocaleDateString()}</span>
+                    <span className="text-[10px] text-muted-foreground">{formatDisplayDate(cert.issued_at)}</span>
                   </div>
                 </div>
               </div>

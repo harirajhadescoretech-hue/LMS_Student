@@ -6,6 +6,7 @@ import {
   ShieldAlert, X, Save, Eye, EyeOff 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDate } from '../../utils/dateTimeUtils';
 
 interface StaffUser {
   id: number;
@@ -244,7 +245,7 @@ const StaffManager: React.FC = () => {
                       </button>
                     </td>
                     <td className="py-3 px-4 text-muted-foreground">
-                      {new Date(staff.date_joined).toLocaleDateString()}
+                      {formatDisplayDate(staff.date_joined)}
                     </td>
                     <td className="py-3 px-4 text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -308,7 +309,7 @@ const StaffManager: React.FC = () => {
                       value={firstName} 
                       onChange={(e) => setFirstName(e.target.value)}
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="Jane"
+                      placeholder="Enter first name"
                       autoComplete="off"
                     />
                   </div>
@@ -319,7 +320,7 @@ const StaffManager: React.FC = () => {
                       value={lastName} 
                       onChange={(e) => setLastName(e.target.value)}
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="Smith"
+                      placeholder="Enter last name"
                       autoComplete="off"
                     />
                   </div>
@@ -332,7 +333,7 @@ const StaffManager: React.FC = () => {
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                    placeholder="jane.smith@company.com"
+                    placeholder="Enter email address"
                     autoComplete="off"
                   />
                 </div>
@@ -357,7 +358,7 @@ const StaffManager: React.FC = () => {
                       value={password} 
                       onChange={(e) => setPassword(e.target.value)}
                       className="w-full h-10 pl-3 pr-10 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="••••••••"
+                      placeholder="Enter password or leave blank for default"
                       autoComplete="new-password"
                     />
                     <button
@@ -490,7 +491,7 @@ const StaffManager: React.FC = () => {
                       onChange={(e) => setNewPassword(e.target.value)}
                       autoComplete="new-password"
                       className="w-full h-10 pl-3 pr-10 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="••••••••"
+                      placeholder="Enter new password"
                     />
                     <button
                       type="button"

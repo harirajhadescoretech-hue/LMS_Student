@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../../services/api';
 import toast from 'react-hot-toast';
 import { MessageSquare, Send, Search, HelpCircle, Trash2, Loader2, ArrowLeft, User } from 'lucide-react';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface UserShort {
   id: number;
@@ -153,7 +154,7 @@ export const DiscussionTab: React.FC = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search threads by student, title or email..."
+            placeholder="Enter student name, title, or email to search..."
             className="w-full h-10 pl-10 pr-4 bg-background border border-border rounded-xl outline-none focus:border-primary/45"
           />
         </div>
@@ -190,7 +191,7 @@ export const DiscussionTab: React.FC = () => {
                       </>
                     )}
                     <span>&bull;</span>
-                    <span>Asked on: {new Date(post.created_at).toLocaleString()}</span>
+                    <span>Asked on: {formatDisplayDateTime(post.created_at)}</span>
                     <button onClick={() => { if (window.confirm('Delete spam post?')) deletePostMutation.mutate(post.id); }} className="text-destructive hover:underline ml-auto flex items-center gap-0.5">
                       <Trash2 size={11} /> <span>Delete thread</span>
                     </button>
@@ -229,7 +230,7 @@ export const DiscussionTab: React.FC = () => {
                               )}
                             </span>
                             <div className="flex items-center gap-2">
-                              <span>{new Date(comment.created_at).toLocaleString()}</span>
+                              <span>{formatDisplayDateTime(comment.created_at)}</span>
                               <button onClick={() => { if (window.confirm('Delete comment?')) deleteCommentMutation.mutate(comment.id); }} className="text-destructive"><Trash2 size={11} /></button>
                             </div>
                           </div>
@@ -246,7 +247,7 @@ export const DiscussionTab: React.FC = () => {
                         type="text"
                         value={newCommentContent}
                         onChange={(e) => setNewCommentContent(e.target.value)}
-                        placeholder="Write your moderation answer..."
+                        placeholder="Enter your moderation reply..."
                         className="h-9 px-3 text-xs bg-card border border-border rounded-xl outline-none flex-1 focus:border-primary/45"
                       />
                       <button

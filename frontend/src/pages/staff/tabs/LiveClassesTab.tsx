@@ -4,6 +4,7 @@ import api from '../../../services/api';
 import toast from 'react-hot-toast';
 import { Plus, Edit3, Trash2, X, Save, Calendar, Clock, ExternalLink, Users, CheckSquare, Square, Search, PlayCircle, UploadCloud, Video } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toLocalDatetimeInput, toUtcIsoString, formatDisplayDate, formatDisplayTime } from '../../../utils/dateTimeUtils';
 
 interface LiveClass {
   id: number;
@@ -101,10 +102,10 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
   });
 
   React.useEffect(() => {
-    if (courses.length > 0 && !editingLiveClass && (!liveCourse || !courses.some(c => c.id.toString() === liveCourse))) {
+    if (!isLiveMode && courses.length > 0 && !editingLiveClass && (!liveCourse || !courses.some(c => c.id.toString() === liveCourse))) {
       setLiveCourse(courses[0].id.toString());
     }
-  }, [courses, liveCourse, editingLiveClass]);
+  }, [courses, liveCourse, editingLiveClass, isLiveMode]);
 
   // Filtered Students list based on search query
   const filteredStudents = assignedStudents.filter(st => {
@@ -137,92 +138,62 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
     }
   };
 
-  const saveLiveClassMutation = useMutation({
-    mutationFn: async (overrideData?: { title: string; scheduled_time: string; meeting_url: string }) => {
-      const courseId = liveCourse ? Number(liveCourse) : null;
-      const finalTitle = overrideData?.title ?? liveTitle;
-      const finalTime = overrideData?.scheduled_time ?? liveTime;
-      const finalUrl = overrideData?.meeting_url ?? liveMeetingUrl;
-      const targetStudentIds = selectedStudentIds.length > 0 ? selectedStudentIds : assignedStudents.map(s => s.id);
-      const payload = {
-        title: finalTitle,
-        course: courseId,
-        scheduled_time: finalTime,
-        meeting_url: finalUrl,
-        recording_url: liveRecordingUrl,
-        status: editingLiveClass ? liveStatus : 'UPCOMING',
-        students: targetStudentIds
-      };
-      if (editingLiveClass) {
-        await api.put(`courses/live/${editingLiveClass.id}/`, payload);
-      } else {
-        await api.post('courses/live/', payload);
-      }
-    },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ['live-classes-list', isLiveMode] });
-      const previousLiveClasses = queryClient.getQueryData<LiveClass[]>(['live-classes-list', isLiveMode]);
-      
-      const courseId = liveCourse ? Number(liveCourse) : null;
-      const targetStudentIds = selectedStudentIds.length > 0 ? selectedStudentIds : assignedStudents.map(s => s.id);
-      const newLiveClassOpt: LiveClass = {
-        id: editingLiveClass ? editingLiveClass.id : -Date.now(),
-        title: liveTitle,
-        course: courseId,
-        course_title: courseId ? (courses.find(c => c.id === courseId)?.title || 'Live Session') : 'Live Mentoring',
-        scheduled_time: liveTime,
-        meeting_url: liveMeetingUrl,
-        recording_url: liveRecordingUrl,
-        status: editingLiveClass ? liveStatus : 'UPCOMING',
-        students: targetStudentIds,
-        students_details: assignedStudents
-          .filter(s => targetStudentIds.includes(s.id))
-          .map(s => ({
-            id: s.id,
-            name: `${s.first_name || ''} ${s.last_name || ''}`.trim() || s.email,
-            email: s.email
-          }))
-      };
+  interface SaveLiveClassPayload {
+    id?: number;
+    title: string;
+    course: number | null;
+    scheduled_time: string;
+    meeting_url: string;
+    recording_url?: string;
+    status: 'UPCOMING' | 'LIVE' | 'COMPLETED';
+    students: number[];
+  }
 
-      if (previousLiveClasses) {
-        if (editingLiveClass) {
-          queryClient.setQueryData<LiveClass[]>(
-            ['live-classes-list', isLiveMode],
-            previousLiveClasses.map(l => l.id === editingLiveClass.id ? newLiveClassOpt : l)
-          );
-        } else {
-          queryClient.setQueryData<LiveClass[]>(
-            ['live-classes-list', isLiveMode],
-            [newLiveClassOpt, ...previousLiveClasses]
-          );
-        }
+  const saveLiveClassMutation = useMutation({
+    mutationFn: async (data: SaveLiveClassPayload) => {
+      const payload = {
+        title: data.title,
+        course: data.course,
+        scheduled_time: toUtcIsoString(data.scheduled_time),
+        meeting_url: data.meeting_url,
+        recording_url: data.recording_url || '',
+        status: data.status,
+        students: data.students
+      };
+      if (data.id) {
+        const res = await api.patch(`courses/live/${data.id}/`, payload);
+        return res.data;
+      } else {
+        const res = await api.post('courses/live/', payload);
+        return res.data;
       }
-      setShowLiveModal(false);
-      resetForm();
-      return { previousLiveClasses };
     },
-    onError: (err: any, variables, context) => {
-      if (context?.previousLiveClasses) {
-        queryClient.setQueryData(['live-classes-list', isLiveMode], context.previousLiveClasses);
-      }
+    onError: (err: any) => {
       const data = err.response?.data;
       let msg = 'Failed to configure live session.';
       if (data) {
         if (typeof data === 'string') msg = data;
         else if (data.detail) msg = data.detail;
-        else if (data.meeting_url) msg = `Meeting URL: ${data.meeting_url[0]}`;
-        else if (data.course) msg = `Course: ${data.course[0]}`;
-        else if (data.scheduled_time) msg = `Scheduled Time: ${data.scheduled_time[0]}`;
-        else if (data.title) msg = `Title: ${data.title[0]}`;
+        else if (data.meeting_url) msg = `Meeting URL: ${Array.isArray(data.meeting_url) ? data.meeting_url[0] : data.meeting_url}`;
+        else if (data.course) msg = `Course: ${Array.isArray(data.course) ? data.course[0] : data.course}`;
+        else if (data.scheduled_time) msg = `Scheduled Time: ${Array.isArray(data.scheduled_time) ? data.scheduled_time[0] : data.scheduled_time}`;
+        else if (data.title) msg = `Title: ${Array.isArray(data.title) ? data.title[0] : data.title}`;
       }
       toast.error(msg);
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      setShowLiveModal(false);
+      resetForm();
+      toast.success(variables.id ? 'Live session modified successfully.' : 'Live session scheduled successfully.');
+    },
+    onSettled: () => {
       refetchLiveClasses();
       queryClient.invalidateQueries({ queryKey: ['live-classes-list'] });
+      queryClient.invalidateQueries({ queryKey: ['live-classes-timeline'] });
+      queryClient.invalidateQueries({ queryKey: ['live-classes-dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['student-calendar-events'] });
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard-stats'] });
       queryClient.invalidateQueries({ queryKey: ['staff-dashboard-stats'] });
-      toast.success(editingLiveClass ? 'Live session modified.' : 'Live session scheduled.');
     }
   });
 
@@ -250,35 +221,32 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
     onSuccess: () => {
       refetchLiveClasses();
       queryClient.invalidateQueries({ queryKey: ['live-classes-list'] });
+      queryClient.invalidateQueries({ queryKey: ['live-classes-timeline'] });
+      queryClient.invalidateQueries({ queryKey: ['live-classes-dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['student-calendar-events'] });
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard-stats'] });
       queryClient.invalidateQueries({ queryKey: ['staff-dashboard-stats'] });
       toast.success('Live class session deleted.');
     }
   });
 
-  const formatDateTimeLocal = (dateStr: string) => {
-    if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const tzoffset = date.getTimezoneOffset() * 60000;
-    return new Date(date.getTime() - tzoffset).toISOString().slice(0, 16);
-  };
-
   const openEdit = (lc: LiveClass) => {
+    if (!lc) return;
     setEditingLiveClass(lc);
-    setLiveTitle(lc.title);
+    setLiveTitle(lc.title || '');
     setLiveCourse(lc.course ? lc.course.toString() : '');
-    setLiveTime(formatDateTimeLocal(lc.scheduled_time));
-    setLiveMeetingUrl(lc.meeting_url);
+    setLiveTime(toLocalDatetimeInput(lc.scheduled_time));
+    setLiveMeetingUrl(lc.meeting_url || '');
     setLiveRecordingUrl(lc.recording_url || '');
-    setLiveStatus(lc.status);
-    setSelectedStudentIds(lc.students || (lc.students_details ? lc.students_details.map(s => s.id) : []));
+    setLiveStatus(lc.status || 'UPCOMING');
+    setSelectedStudentIds(Array.isArray(lc.students) ? lc.students : (lc.students_details ? lc.students_details.map(s => s.id) : []));
     setStudentSearch('');
     setShowLiveModal(true);
   };
 
   const resetForm = () => {
     setLiveTitle('');
-    setLiveCourse(courses.length > 0 ? courses[0].id.toString() : '');
+    setLiveCourse('');
     setLiveTime('');
     setLiveMeetingUrl('');
     setLiveRecordingUrl('');
@@ -342,7 +310,7 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
                   <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent" />
                   <PlayCircle size={48} className="text-primary/40 group-hover:text-primary transition-colors group-hover:scale-110 duration-300" />
                   <div className="absolute top-3 right-3 bg-card/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-border text-[10px] font-bold">
-                    {new Date(lc.scheduled_time).toLocaleDateString()}
+                    {formatDisplayDate(lc.scheduled_time)}
                   </div>
                 </div>
                 
@@ -416,11 +384,11 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
               <div className="space-y-1.5 text-xs text-muted-foreground mt-4">
                 <div className="flex items-center gap-2 font-medium">
                   <Calendar size={12} className="text-primary" />
-                  <span>Scheduled Date: {new Date(lc.scheduled_time).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  <span>Scheduled Date: {formatDisplayDate(lc.scheduled_time)}</span>
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <Clock size={12} className="text-primary" />
-                  <span>Scheduled Time: {new Date(lc.scheduled_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span>Scheduled Time: {formatDisplayTime(lc.scheduled_time)}</span>
                 </div>
               </div>
 
@@ -523,6 +491,7 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
                 const titleVal = ((formData.get('title') as string) || liveTitle).trim();
                 const timeVal = (formData.get('scheduled_time') as string) || liveTime;
                 const urlVal = ((formData.get('meeting_url') as string) || liveMeetingUrl).trim();
+                const recordingUrlVal = ((formData.get('recording_url') as string) || liveRecordingUrl).trim();
 
                 if (!titleVal) {
                   toast.error("Please enter session title.");
@@ -532,8 +501,8 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
                   toast.error("Please select meeting date & time.");
                   return;
                 }
-                if (courses.length > 0 && !liveCourse) {
-                  toast.error("Please select a target course.");
+                if (!isLiveMode && courses.length > 0 && !liveCourse) {
+                  toast.error("Please select a target course for Doubt Clearing.");
                   return;
                 }
                 if (!urlVal) {
@@ -542,27 +511,34 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
                 }
 
                 saveLiveClassMutation.mutate({
+                  id: editingLiveClass?.id,
                   title: titleVal,
+                  course: liveCourse ? Number(liveCourse) : null,
                   scheduled_time: timeVal,
-                  meeting_url: urlVal
+                  meeting_url: urlVal,
+                  recording_url: recordingUrlVal,
+                  status: editingLiveClass ? liveStatus : 'UPCOMING',
+                  students: selectedStudentIds.length > 0 ? selectedStudentIds : assignedStudents.map(s => s.id)
                 });
               }} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Session Title *</label>
-                  <input name="title" type="text" value={liveTitle} onChange={(e) => setLiveTitle(e.target.value)} required placeholder="e.g. Django Advanced ORM Optimization" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input name="title" type="text" value={liveTitle} onChange={(e) => setLiveTitle(e.target.value)} required placeholder="Enter session title" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
 
                 {courses.length > 0 && (
                   <div>
-                    <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Target Course *</label>
+                    <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">
+                      Target Course {!isLiveMode ? '*' : '(Optional)'}
+                    </label>
                     <select 
                       name="course"
                       value={liveCourse} 
                       onChange={(e) => setLiveCourse(e.target.value)} 
-                      required 
+                      required={!isLiveMode} 
                       className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none font-medium"
                     >
-                      {courses.length > 1 && <option value="">-- Select Target Course --</option>}
+                      <option value="">{isLiveMode ? '-- General Live Mentoring (No Course Track) --' : '-- Select Target Course --'}</option>
                       {courses.map(c => (
                         <option key={c.id} value={c.id}>{c.title}</option>
                       ))}
@@ -597,7 +573,7 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
                       <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                       <input
                         type="text"
-                        placeholder="Search student by name or email..."
+                        placeholder="Enter student name or email to search..."
                         value={studentSearch}
                         onChange={(e) => setStudentSearch(e.target.value)}
                         className="w-full h-8 pl-8 pr-7 bg-muted/40 border border-border rounded-lg text-xs outline-none focus:border-primary transition-all"
@@ -664,7 +640,7 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Meeting URL Link *</label>
-                  <input name="meeting_url" type="text" value={liveMeetingUrl} onChange={(e) => setLiveMeetingUrl(e.target.value)} required placeholder="https://zoom.us/j/... or meet.google.com/..." className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input name="meeting_url" type="text" value={liveMeetingUrl} onChange={(e) => setLiveMeetingUrl(e.target.value)} required placeholder="Enter meeting URL link" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 {editingLiveClass && (
                   <div>
@@ -679,7 +655,7 @@ export const LiveClassesTab: React.FC<{ defaultFilter?: 'ALL' | 'UPCOMING' | 'LI
                 {liveStatus === 'COMPLETED' && (
                   <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
                     <label className="block text-[10px] text-primary uppercase mb-1 font-bold">Class Recording URL</label>
-                    <input name="recording_url" type="text" value={liveRecordingUrl} onChange={(e) => setLiveRecordingUrl(e.target.value)} placeholder="https://youtube.com/... or Google Drive Link" className="w-full h-10 px-3 bg-primary/5 border border-primary/20 rounded-xl outline-none focus:border-primary/50" />
+                    <input name="recording_url" type="text" value={liveRecordingUrl} onChange={(e) => setLiveRecordingUrl(e.target.value)} placeholder="Enter class recording URL link" className="w-full h-10 px-3 bg-primary/5 border border-primary/20 rounded-xl outline-none focus:border-primary/50" />
                   </motion.div>
                 )}
                 <button type="submit" disabled={saveLiveClassMutation.isPending} className="w-full py-2.5 bg-primary text-primary-foreground font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-primary/10">

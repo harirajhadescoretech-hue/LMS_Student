@@ -6,6 +6,7 @@ import { motion, type Variants } from 'framer-motion';
 import api from '../../../services/api';
 import { Award, Download, ShieldCheck, Sparkles, CheckCircle2, Lock } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
+import { formatDisplayDate } from '../../../utils/dateTimeUtils';
 
 interface Certificate {
   id: number;
@@ -123,21 +124,21 @@ export const CertificatesTab: React.FC = () => {
                 </div>
 
                 <div>
-                  <span className={`text-[8px] uppercase font-black tracking-wider block ${isUnlocked ? 'text-amber-400' : 'text-slate-500'}`}>Official Credential</span>
-                  <h3 className={`font-extrabold text-xs leading-snug truncate ${isUnlocked ? 'text-foreground group-hover:text-amber-400 transition-colors' : 'text-muted-foreground'}`}>{cert.course_title}</h3>
+                  <span className={`text-[8px] uppercase font-black tracking-wider block ${isUnlocked ? 'text-amber-600' : 'text-slate-500'}`}>Official Credential</span>
+                  <h3 className={`font-extrabold text-xs leading-snug truncate ${isUnlocked ? 'text-slate-900 group-hover:text-amber-600 transition-colors' : 'text-slate-500'}`}>{cert.course_title}</h3>
                 </div>
                 
-                <div className="bg-muted/40 p-2 rounded-xl border border-border/80">
-                  <span className="text-[8px] text-muted-foreground block uppercase font-extrabold tracking-wider">Verification Code</span>
-                  <span className={`font-mono font-black tracking-wider select-all block text-[11px] truncate ${isUnlocked ? 'text-cyan-400' : 'text-slate-600'}`}>{cert.certificate_code}</span>
+                <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+                  <span className="text-[8px] text-slate-500 block uppercase font-extrabold tracking-wider">Verification Code</span>
+                  <span className={`font-mono font-black tracking-wider select-all block text-[11px] truncate ${isUnlocked ? 'text-teal-700' : 'text-slate-600'}`}>{cert.certificate_code}</span>
                 </div>
               </div>
 
-              <div className="pt-2.5 border-t border-border/60 flex flex-col gap-2 relative z-10 mt-2">
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground font-semibold">
-                  <span>Issued: {new Date(cert.issued_at).toLocaleDateString()}</span>
+              <div className="pt-2.5 border-t border-slate-200 flex flex-col gap-2 relative z-10 mt-2">
+                <div className="flex items-center justify-between text-[10px] text-slate-600 font-semibold">
+                  <span>Issued: {formatDisplayDate(cert.issued_at)}</span>
                   {isUnlocked ? (
-                    <span className="text-emerald-400 font-bold flex items-center gap-1">
+                    <span className="text-emerald-700 font-bold flex items-center gap-1">
                       <CheckCircle2 size={10} /> Certified
                     </span>
                   ) : (

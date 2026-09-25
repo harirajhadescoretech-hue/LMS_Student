@@ -165,10 +165,10 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   // Queries
-  const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
+  const { data: courses = [], isLoading: coursesLoading, refetch: refetchCourses } = useQuery<Course[]>({
     queryKey: ['courses-list', isRecordingsMode],
     placeholderData: (prev) => prev,
-    staleTime: 600000,
+    staleTime: 10000,
     queryFn: async () => {
       const res = await api.get(`courses/list/?is_mentoring_track=${isRecordingsMode}`);
       return Array.isArray(res.data) ? res.data : (res.data?.results || []);
@@ -281,9 +281,9 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
   const saveCourseMutation = useMutation({
     mutationFn: async () => {
       const payload = {
-        title: courseTitle,
-        description: courseDesc,
-        category: courseCategory || (categories[0]?.id ?? 1),
+        title: courseTitle.trim(),
+        description: courseDesc.trim(),
+        category: courseCategory ? Number(courseCategory) : (categories[0]?.id ?? null),
         mentor: courseMentor || null,
         thumbnail: courseThumb,
         instructor_name: instructorName,
@@ -291,7 +291,7 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
         status: courseStatus,
         requirements: courseReqs,
         outcomes: courseOuts,
-        slug: courseTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `course-${Date.now()}`,
+        slug: courseTitle.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `course-${Date.now()}`,
         is_mentoring_track: isRecordingsMode
       };
       if (selectedCourse) {
@@ -305,12 +305,23 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
       queryClient.invalidateQueries({ queryKey: ['courses-dropdown-list'] });
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard-stats'] });
       queryClient.invalidateQueries({ queryKey: ['staff-dashboard-stats'] });
+      refetchCourses();
       setShowCourseModal(false);
       resetCourseForm();
-      toast.success('Course profile saved.');
+      toast.success(isRecordingsMode ? 'Mentoring track saved successfully.' : 'Course profile saved.');
     },
-    onError: () => {
-      toast.error('Failed to save course.');
+    onError: (err: any) => {
+      const data = err.response?.data;
+      let msg = 'Failed to save course.';
+      if (data) {
+        if (typeof data === 'string') msg = data;
+        else if (data.detail) msg = data.detail;
+        else if (data.title) msg = `Title: ${Array.isArray(data.title) ? data.title[0] : data.title}`;
+        else if (data.slug) msg = `Slug: ${Array.isArray(data.slug) ? data.slug[0] : data.slug}`;
+        else if (data.description) msg = `Description: ${Array.isArray(data.description) ? data.description[0] : data.description}`;
+        else if (data.category) msg = `Category: ${Array.isArray(data.category) ? data.category[0] : data.category}`;
+      }
+      toast.error(msg);
     }
   });
 
@@ -323,8 +334,9 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
       queryClient.invalidateQueries({ queryKey: ['courses-dropdown-list'] });
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard-stats'] });
       queryClient.invalidateQueries({ queryKey: ['staff-dashboard-stats'] });
+      refetchCourses();
       setSelectedCourse(null);
-      toast.success('Course layout wiped.');
+      toast.success(isRecordingsMode ? 'Mentoring track removed.' : 'Course layout wiped.');
     }
   });
 
@@ -888,14 +900,14 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
               <div className="flex justify-between items-center border-b border-border pb-3">
                 <h3 className="font-bold text-base flex items-center gap-2">
                   <Layers size={16} className="text-primary" />
-                  <span>Modules Outline Builder</span>
+                  <span>{isRecordingsMode ? 'Recorded Sessions Builder' : 'Modules Outline Builder'}</span>
                 </h3>
                 <button 
                   onClick={() => { setModTitle(''); setEditingModule(null); setShowModModal(true); }}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground font-bold rounded-xl"
                 >
                   <Plus size={12} />
-                  <span>Add Module</span>
+                  <span>{isRecordingsMode ? 'Add Session Group' : 'Add Module'}</span>
                 </button>
               </div>
 
@@ -937,9 +949,11 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
                           {/* Lessons sub list */}
                           <div className="space-y-2">
                             <div className="flex justify-between items-center">
-                              <span className="font-bold text-muted-foreground block text-[10px] uppercase">Lessons List</span>
+                              <span className="font-bold text-muted-foreground block text-[10px] uppercase">
+                                {isRecordingsMode ? 'Recorded Sessions List' : 'Lessons List'}
+                              </span>
                               <button onClick={() => openCreateLesson(mod.id)} className="text-primary font-bold flex items-center gap-0.5 hover:underline">
-                                <Plus size={11} /> Add Lesson
+                                <Plus size={11} /> {isRecordingsMode ? 'Add Recording' : 'Add Lesson'}
                               </button>
                             </div>
                             <div className="space-y-2">
@@ -1088,12 +1102,12 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
               <form onSubmit={(e) => { e.preventDefault(); saveCourseMutation.mutate(); }} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Course Title *</label>
-                  <input type="text" value={courseTitle} onChange={(e) => setCourseTitle(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={courseTitle} onChange={(e) => setCourseTitle(e.target.value)} required placeholder="e.g. Python for Beginners" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
 
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Course Briefing / Description *</label>
-                  <textarea value={courseDesc} onChange={(e) => setCourseDesc(e.target.value)} required rows={3} className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
+                  <textarea value={courseDesc} onChange={(e) => setCourseDesc(e.target.value)} required rows={3} placeholder="Brief overview of this course/track..." className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
                 </div>
 
 
@@ -1101,11 +1115,11 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Instructor Name</label>
-                    <input type="text" value={instructorName} onChange={(e) => setInstructorName(e.target.value)} className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <input type="text" value={instructorName} onChange={(e) => setInstructorName(e.target.value)} placeholder="e.g. John Doe" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Instructor Role</label>
-                    <input type="text" value={instructorRole} onChange={(e) => setInstructorRole(e.target.value)} className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <input type="text" value={instructorRole} onChange={(e) => setInstructorRole(e.target.value)} placeholder="e.g. Senior Developer" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                 </div>
                 <div>
@@ -1118,7 +1132,7 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Pre-requisites</label>
-                  <input type="text" value={courseReqs} onChange={(e) => setCourseReqs(e.target.value)} className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={courseReqs} onChange={(e) => setCourseReqs(e.target.value)} placeholder="e.g. Basic programming knowledge" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <button type="submit" disabled={saveCourseMutation.isPending} className="w-full py-2.5 bg-primary text-primary-foreground font-bold rounded-xl">Save Track Configuration</button>
               </form>
@@ -1141,7 +1155,7 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
               <form onSubmit={(e) => { e.preventDefault(); if (selectedCourse) saveModuleMutation.mutate({ title: modTitle, courseId: selectedCourse.id, editingModuleId: editingModule?.id, isEdit: !!editingModule }); }} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Module Title *</label>
-                  <input type="text" value={modTitle} onChange={(e) => setModTitle(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={modTitle} onChange={(e) => setModTitle(e.target.value)} required placeholder="e.g. Introduction to Python" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <button type="submit" disabled={saveModuleMutation.isPending} className="w-full py-2.5 bg-primary text-primary-foreground font-bold rounded-xl">Save Module</button>
               </form>
@@ -1164,12 +1178,12 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
               <form onSubmit={(e) => { e.preventDefault(); saveLessonMutation.mutate(); }} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Lesson Title *</label>
-                  <input type="text" value={lesTitle} onChange={(e) => setLesTitle(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={lesTitle} onChange={(e) => setLesTitle(e.target.value)} required placeholder="e.g. Variables and Data Types" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 {!isRecordingsMode && (
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Markdown Lesson Content *</label>
-                    <textarea value={lesContent} onChange={(e) => setLesContent(e.target.value)} required rows={6} className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none font-mono text-[11px]" />
+                    <textarea value={lesContent} onChange={(e) => setLesContent(e.target.value)} required rows={6} placeholder="Lesson content, notes, or transcript..." className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none font-mono text-[11px]" />
                   </div>
                 )}
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -1256,11 +1270,11 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
               <form onSubmit={(e) => { e.preventDefault(); saveAssignmentMutation.mutate(); }} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Assignment Title *</label>
-                  <input type="text" value={assignTitle} onChange={(e) => setAssignTitle(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={assignTitle} onChange={(e) => setAssignTitle(e.target.value)} required placeholder="e.g. Week 1 Practice Assignment" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Guidelines / Rubrics Instructions *</label>
-                  <textarea value={assignDesc} onChange={(e) => setAssignDesc(e.target.value)} required rows={4} className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
+                  <textarea value={assignDesc} onChange={(e) => setAssignDesc(e.target.value)} required rows={4} placeholder="Describe the task, instructions, and expected outcome..." className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Guideline file attachment</label>
@@ -1430,7 +1444,7 @@ export const CoursesTab: React.FC<CoursesTabProps> = ({ isRecordingsMode = false
                     <h5 className="font-bold text-xs uppercase text-muted-foreground border-b border-border pb-1.5">Add Question</h5>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Question Prompt *</label>
-                      <input type="text" value={qText} onChange={(e) => setQText(e.target.value)} placeholder="e.g. What is Django?" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
+                      <input type="text" value={qText} onChange={(e) => setQText(e.target.value)} placeholder="Enter question prompt" className="w-full h-8 px-2 bg-card border border-border rounded-lg" />
                     </div>
                     <div>
                       <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Question Type</label>

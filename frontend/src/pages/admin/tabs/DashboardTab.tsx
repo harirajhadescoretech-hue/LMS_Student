@@ -14,9 +14,13 @@ import {
   Video,
   ChevronRight,
   TrendingUp,
+  Shield,
+  Calendar,
+  Quote,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import { formatDisplayDate } from "../../../utils/dateTimeUtils";
 import {
   AreaChart,
   Area,
@@ -127,8 +131,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate }) => {
           count: stats?.total_staff ?? 0,
           sub: `${stats?.active_staff ?? 0} active`,
           icon: Users,
-          iconBg: "bg-indigo-100 dark:bg-indigo-900/30",
-          iconColor: "text-indigo-600 dark:text-indigo-400",
+          iconBg: "bg-indigo-50 text-indigo-600",
           tab: "staff",
         },
         {
@@ -136,8 +139,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate }) => {
           count: stats?.total_students ?? 0,
           sub: `${stats?.active_students ?? 0} active`,
           icon: Users,
-          iconBg: "bg-emerald-100 dark:bg-emerald-900/30",
-          iconColor: "text-emerald-600 dark:text-emerald-400",
+          iconBg: "bg-sky-50 text-sky-600",
           tab: "students",
         },
         {
@@ -145,46 +147,41 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate }) => {
           count: stats?.total_live_classes ?? stats?.live_classes_today ?? 0,
           sub: `${stats?.live_classes_today ?? 0} scheduled today`,
           icon: Video,
-          iconBg: "bg-amber-100 dark:bg-amber-900/30",
-          iconColor: "text-amber-600 dark:text-amber-400",
+          iconBg: "bg-amber-50 text-amber-600",
           tab: "live",
         },
       ]
     : [
         {
-          label: "Courses",
+          label: "COURSES",
           count: stats?.total_courses ?? 0,
           sub: `${stats?.total_categories ?? 0} Categories`,
           icon: BookOpen,
-          iconBg: "bg-blue-100 dark:bg-blue-900/30",
-          iconColor: "text-blue-600 dark:text-blue-400",
+          iconBg: "bg-[#e6fbf4] text-[#00a884]",
           tab: "courses",
         },
         {
-          label: "Students",
+          label: "STUDENTS",
           count: stats?.total_students ?? 0,
           sub: `${stats?.active_students ?? 0} Active`,
           icon: Users,
-          iconBg: "bg-emerald-100 dark:bg-emerald-900/30",
-          iconColor: "text-emerald-600 dark:text-emerald-400",
+          iconBg: "bg-sky-50 text-sky-600",
           tab: "students",
         },
         {
-          label: "Content",
+          label: "CONTENT",
           count: stats?.total_lessons ?? 0,
           sub: `${stats?.total_videos ?? 0} Video resources`,
           icon: Layers,
-          iconBg: "bg-violet-100 dark:bg-violet-900/30",
-          iconColor: "text-violet-600 dark:text-violet-400",
+          iconBg: "bg-purple-50 text-purple-600",
           tab: "courses",
         },
         {
-          label: "Certificates",
+          label: "CERTIFICATES",
           count: stats?.certificates_issued ?? 0,
           sub: `${stats?.pending_assignments ?? 0} Pending`,
           icon: FileCheck,
-          iconBg: "bg-teal-100 dark:bg-teal-900/30",
-          iconColor: "text-teal-600 dark:text-teal-400",
+          iconBg: "bg-amber-50 text-amber-600",
           tab: "certificates",
         },
       ];
@@ -204,36 +201,53 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate }) => {
 
   return (
     <div className="space-y-4 text-xs pb-6">
-      {/* Clean Header Section */}
+      {/* Top Hero Greeting Card (Sample UI Mockup) */}
       <motion.div 
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-none items-center justify-between gap-3 p-4 rounded-2xl bg-card border border-border shadow-sm"
+        className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 p-5 sm:p-6 rounded-2xl bg-white border border-[#e2eded] shadow-sm relative overflow-hidden"
       >
+        {/* Left: Shield Emblem & Title */}
         <div className="flex items-center gap-4">
-          <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
-            <Activity size={20} />
+          <div className="p-3 rounded-2xl bg-[#e6fbf4] text-[#00a884] border border-[#bbf7e2] shrink-0">
+            <Shield size={28} className="stroke-[2.2]" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-[26px] font-black tracking-tight text-slate-900 leading-tight">
               {liveMode ? "Live Command Center" : "Platform Command Center"}
             </h1>
-            <p className="text-muted-foreground text-xs font-medium mt-0.5">
+            <p className="text-slate-500 text-xs font-medium mt-0.5">
               {liveMode ? "Real-time Live Sessions & Attendance" : "Course Analytics & Content Engine"}
             </p>
           </div>
         </div>
-        
-        <button
-          onClick={() => {
-            refetch();
-            toast.success("Metrics synchronized.");
-          }}
-          className="flex items-center gap-2 px-5 py-2.5 bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-lg text-sm font-medium transition-colors"
-        >
-          <RefreshCw size={14} />
-          <span>Sync Data</span>
-        </button>
+
+        {/* Right: Date Pill & Quote (Sample UI Mockup) */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Date pill */}
+          <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-white border border-slate-200/80 shadow-sm text-slate-700">
+            <Calendar size={18} className="text-[#009e86]" />
+            <div>
+              <p className="text-xs font-bold text-slate-800 leading-none">
+                {formatDisplayDate(new Date())}
+              </p>
+              <p className="text-[10px] text-slate-400 font-medium leading-none mt-1">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
+              </p>
+            </div>
+          </div>
+
+          {/* Inspirational Quote Pill */}
+          <div className="flex items-start gap-2.5 px-4 py-2.5 rounded-2xl bg-[#f0fdf9] border border-[#bbf7e2] shadow-sm max-w-xs">
+            <Quote size={16} className="text-[#009e86] shrink-0 mt-0.5 rotate-180" />
+            <div>
+              <p className="text-[11px] italic font-medium text-slate-700 leading-tight">
+                “Small steps every day lead to big results.”
+              </p>
+              <div className="w-6 h-0.5 bg-[#009e86] rounded-full mt-1.5" />
+            </div>
+          </div>
+        </div>
       </motion.div>
 
       <motion.div 
@@ -242,32 +256,38 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ onNavigate }) => {
         animate="show"
         className="space-y-4"
       >
-        {/* Top Stats Row */}
-        <div className={`grid flex-none gap-2.5 sm:grid-cols-2 ${liveMode ? 'lg:grid-cols-3' : 'lg:grid-cols-4'}`}>
+        {/* Top Stats Row (Sample UI Mockup Style) */}
+        <div className={`grid flex-none gap-3 sm:grid-cols-2 ${liveMode ? 'lg:grid-cols-3' : 'lg:grid-cols-4'}`}>
           {cards.map((c, i) => (
             <motion.div
               variants={itemVariants}
               key={i}
               onClick={() => onNavigate(c.tab)}
-              className="rounded-2xl border border-border bg-card p-4 shadow-sm hover:shadow-md hover:border-border/80 transition-all cursor-pointer flex flex-col justify-between h-[96px]"
+              className="rounded-2xl border border-[#e2eded] bg-white p-4 shadow-sm hover:shadow-md hover:border-teal-500/30 transition-all cursor-pointer flex flex-col justify-between h-[106px] group"
             >
               <div className="flex justify-between items-start mb-1">
-                <div className="flex items-center gap-2.5">
-                  <c.icon size={18} className={`${c.iconColor} shrink-0`} />
-                  <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-                    {c.label}
-                  </span>
+                <div className="flex items-center gap-3">
+                  <div className={`p-2.5 rounded-xl ${c.iconBg} shadow-sm shrink-0`}>
+                    <c.icon size={18} />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+                      {c.label}
+                    </span>
+                    <h3 className="text-2xl font-black text-slate-900 leading-none mt-1">
+                      {c.count}
+                    </h3>
+                  </div>
                 </div>
-                <ChevronRight size={14} className="text-muted-foreground/30 mt-1" />
+                <ChevronRight size={14} className="text-slate-300 group-hover:text-teal-600 group-hover:translate-x-0.5 transition-all mt-1" />
               </div>
 
-              <div className="flex items-baseline gap-2 mt-1">
-                <h3 className="text-2xl font-bold text-foreground leading-none">
-                  {c.count}
-                </h3>
-                <p className="text-[10px] text-muted-foreground font-medium">
-                  {c.sub}
-                </p>
+              <div className="flex items-center justify-between pt-1 border-t border-slate-50 text-[10px]">
+                <span className="text-slate-500 font-medium">{c.sub}</span>
+                <span className="text-emerald-600 font-bold flex items-center gap-0.5">
+                  <span>↑</span>
+                  <span>+0%</span>
+                </span>
               </div>
             </motion.div>
           ))}

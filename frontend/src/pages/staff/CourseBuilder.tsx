@@ -1146,7 +1146,7 @@ const CourseBuilder: React.FC = () => {
                     value={courseTitle} 
                     onChange={(e) => setCourseTitle(e.target.value)}
                     className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                    placeholder="e.g. Django Enterprise Deployment"
+                    placeholder="Enter course title"
                     required
                   />
                 </div>
@@ -1186,7 +1186,7 @@ const CourseBuilder: React.FC = () => {
                       value={courseThumb} 
                       onChange={(e) => setCourseThumb(e.target.value)}
                       className="flex-1 h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all text-xs"
-                      placeholder="Paste R2 URL or click upload"
+                      placeholder="Enter thumbnail URL or click upload"
                     />
                     <label className="h-10 w-10 bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30 rounded-xl flex items-center justify-center cursor-pointer transition-all shrink-0" title="Upload Thumbnail">
                       {uploadingFile === 'thumbnail' ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
@@ -1209,7 +1209,7 @@ const CourseBuilder: React.FC = () => {
                       value={instructorName} 
                       onChange={(e) => setInstructorName(e.target.value)}
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="e.g. Sarah Instructor"
+                      placeholder="Enter instructor name"
                     />
                   </div>
                   <div>
@@ -1219,7 +1219,7 @@ const CourseBuilder: React.FC = () => {
                       value={instructorRole} 
                       onChange={(e) => setInstructorRole(e.target.value)}
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                      placeholder="e.g. Instructor / Coordinator"
+                      placeholder="Enter instructor role"
                     />
                   </div>
                 </div>
@@ -1231,7 +1231,7 @@ const CourseBuilder: React.FC = () => {
                     onChange={(e) => setCourseDesc(e.target.value)}
                     rows={2}
                     className="w-full p-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all resize-none"
-                    placeholder="Describe course objectives and expected outputs..."
+                    placeholder="Enter course objectives and expected outputs"
                   />
                 </div>
 
@@ -1243,7 +1243,7 @@ const CourseBuilder: React.FC = () => {
                       onChange={(e) => setCourseReqs(e.target.value)}
                       rows={2}
                       className="w-full p-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all resize-none"
-                      placeholder="e.g. Basic Python familiarity, VS Code installed"
+                      placeholder="Enter course prerequisites"
                     />
                   </div>
                   <div>
@@ -1253,7 +1253,7 @@ const CourseBuilder: React.FC = () => {
                       onChange={(e) => setCourseOuts(e.target.value)}
                       rows={2}
                       className="w-full p-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all resize-none"
-                      placeholder="e.g. Build backend servers, validate custom JWT tokens"
+                      placeholder="Enter course outcomes"
                     />
                   </div>
                 </div>
@@ -1265,7 +1265,7 @@ const CourseBuilder: React.FC = () => {
                     onChange={(e) => setCoursePath(e.target.value)}
                     rows={2}
                     className="w-full p-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all resize-none"
-                    placeholder="Describe target training timeline, milestones, or homework intervals..."
+                    placeholder="Enter target training timeline, milestones, or homework intervals"
                   />
                 </div>
 
@@ -1304,7 +1304,7 @@ const CourseBuilder: React.FC = () => {
                     value={modTitle} 
                     onChange={(e) => setModTitle(e.target.value)}
                     className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                    placeholder="e.g. Module 1: Introduction to Models"
+                    placeholder="Enter module title"
                     required
                   />
                 </div>
@@ -1344,7 +1344,7 @@ const CourseBuilder: React.FC = () => {
                     value={lesTitle} 
                     onChange={(e) => setLesTitle(e.target.value)}
                     className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40"
-                    placeholder="e.g. Lesson 1.1: Custom User Hashing"
+                    placeholder="Enter lesson title"
                     required
                   />
                 </div>
@@ -1358,7 +1358,7 @@ const CourseBuilder: React.FC = () => {
                         value={lesThumbnail} 
                         onChange={(e) => setLesThumbnail(e.target.value)}
                         className="flex-1 h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 text-xs"
-                        placeholder="https://R2-link/cover.jpg"
+                        placeholder="Enter lesson thumbnail URL"
                       />
                       <label className="h-10 w-10 bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30 rounded-xl flex items-center justify-center cursor-pointer transition-all shrink-0" title="Upload Cover Image">
                         {uploadingFile === 'lesThumbnail' ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
@@ -1380,7 +1380,7 @@ const CourseBuilder: React.FC = () => {
                         value={lesVideoId} 
                         onChange={(e) => setLesVideoId(e.target.value)}
                         className="flex-1 h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 text-xs"
-                        placeholder="CF ID or video link"
+                        placeholder="Enter Cloudflare ID or video URL"
                       />
                       <label className="h-10 w-10 bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30 rounded-xl flex items-center justify-center cursor-pointer transition-all shrink-0" title="Upload Video">
                         {uploadingFile === 'video' ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
@@ -1405,7 +1405,7 @@ const CourseBuilder: React.FC = () => {
                         value={lesPdf} 
                         onChange={(e) => setLesPdf(e.target.value)}
                         className="flex-1 h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 text-xs"
-                        placeholder="https://R2-link/slides.pdf"
+                        placeholder="Enter PDF attachment URL"
                       />
                       <label className="h-10 w-10 bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30 rounded-xl flex items-center justify-center cursor-pointer transition-all shrink-0" title="Upload PDF/PPT">
                         {uploadingFile === 'pdf' ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
@@ -1430,7 +1430,7 @@ const CourseBuilder: React.FC = () => {
                         value={lesZip} 
                         onChange={(e) => setLesZip(e.target.value)}
                         className="flex-1 h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 text-xs"
-                        placeholder="https://R2-link/src.zip"
+                        placeholder="Enter source code ZIP URL"
                       />
                       <label className="h-10 w-10 bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30 rounded-xl flex items-center justify-center cursor-pointer transition-all shrink-0" title="Upload ZIP">
                         {uploadingFile === 'zip' ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
@@ -1451,7 +1451,7 @@ const CourseBuilder: React.FC = () => {
                       value={lesLinks} 
                       onChange={(e) => setLesLinks(e.target.value)}
                       className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 text-xs"
-                      placeholder="https://github.com/hadescore, https://docs.django.org"
+                      placeholder="Enter reference URLs (comma separated)"
                     />
                   </div>
                 </div>
@@ -1463,7 +1463,7 @@ const CourseBuilder: React.FC = () => {
                     onChange={(e) => setLesContent(e.target.value)}
                     rows={4}
                     className="w-full p-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 font-mono"
-                    placeholder="### Lesson Objectives..."
+                    placeholder="Enter markdown notes and summary"
                   />
                 </div>
 
@@ -1476,7 +1476,7 @@ const CourseBuilder: React.FC = () => {
                     onChange={(e) => setLesNotes(e.target.value)}
                     rows={3}
                     className="w-full p-3 bg-muted/50 border border-primary/30 rounded-xl outline-none focus:border-primary font-mono text-xs placeholder:text-muted-foreground/50"
-                    placeholder="Paste lecture transcript, study notes, Q&A pairs, formulas, or key concepts here to train the AI tutor for this lesson..."
+                    placeholder="Enter lecture transcript, study notes, Q&A pairs, formulas, or key concepts to train the AI tutor"
                   />
                   <p className="text-[10px] text-muted-foreground mt-1">The AI Tutor dynamically reads this knowledge base to answer student questions accurately for this video lesson.</p>
                 </div>
@@ -1528,7 +1528,7 @@ const CourseBuilder: React.FC = () => {
                     value={assignTitle} 
                     onChange={(e) => setAssignTitle(e.target.value)}
                     className="w-full h-10 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
-                    placeholder="e.g. Week 1 Homework - Build a REST API"
+                    placeholder="Enter assignment title"
                     required
                   />
                 </div>
@@ -1540,7 +1540,7 @@ const CourseBuilder: React.FC = () => {
                     onChange={(e) => setAssignDesc(e.target.value)}
                     rows={3}
                     className="w-full p-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all resize-none"
-                    placeholder="Describe assignment objectives, deliverables, and grading criteria..."
+                    placeholder="Enter assignment objectives, deliverables, and grading criteria"
                     required
                   />
                 </div>
@@ -1654,6 +1654,7 @@ const CourseBuilder: React.FC = () => {
                           type="text"
                           value={quizTitle}
                           onChange={(e) => setQuizTitle(e.target.value)}
+                          placeholder="Enter quiz title"
                           className="w-full h-9 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all"
                           required
                         />
@@ -1835,7 +1836,7 @@ const CourseBuilder: React.FC = () => {
                           value={qText}
                           onChange={(e) => setQText(e.target.value)}
                           className="w-full p-2.5 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all resize-none"
-                          placeholder="e.g. Which keyword is used to start a transaction in PostgreSQL?"
+                          placeholder="Enter question prompt"
                           required
                         />
                       </div>
@@ -1871,7 +1872,7 @@ const CourseBuilder: React.FC = () => {
                               value={qCorrect}
                               onChange={(e) => setQCorrect(e.target.value)}
                               className="w-full h-9 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all font-semibold"
-                              placeholder="e.g. SELECT (or SELECT,BEGIN for MSQ)"
+                              placeholder="Enter correct answer (comma separated for MSQ)"
                               required
                             />
                           )}
@@ -1886,7 +1887,7 @@ const CourseBuilder: React.FC = () => {
                             value={qOptions}
                             onChange={(e) => setQOptions(e.target.value)}
                             className="w-full h-9 px-3 bg-muted/50 border border-border rounded-xl outline-none focus:border-primary/40 focus:bg-background transition-all text-xs"
-                            placeholder="e.g. SELECT, BEGIN, COMMIT, ROLLBACK"
+                            placeholder="Enter comma-separated options"
                             required
                           />
                           <p className="text-[10px] text-muted-foreground mt-0.5 leading-relaxed">Enter options exactly. Correct Answer input must match one of these options exactly (or match multiple separated by commas for MSQ).</p>

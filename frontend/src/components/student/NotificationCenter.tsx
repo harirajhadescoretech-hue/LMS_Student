@@ -4,6 +4,7 @@ import type { RootState } from '../../store';
 import api from '../../services/api';
 import { Bell, Check, CheckCheck, Loader2, X, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { formatDisplayDateTime } from '../../utils/dateTimeUtils';
 
 interface Notification {
   id: number;
@@ -184,7 +185,7 @@ const NotificationCenter: React.FC = () => {
   // SUPER_ADMIN also sees the notification bell (quiz submission alerts etc.)
 
   return (
-    <div className="relative text-xs" ref={dropdownRef}>
+    <div className="relative text-xs z-[9999]" ref={dropdownRef}>
       {/* Bell Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
@@ -201,7 +202,7 @@ const NotificationCenter: React.FC = () => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-slate-950/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-emerald-500/30 py-3 z-50 space-y-2 animate-scale-up text-slate-200">
+        <div className="absolute right-0 mt-2 w-80 bg-slate-950/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-emerald-500/30 py-3 z-[10000] space-y-2 animate-scale-up text-slate-200">
           {/* Header */}
           <div className="flex items-center justify-between px-4 pb-2 border-b border-emerald-500/20">
             <h4 className="font-bold text-xs text-white">Notifications</h4>
@@ -245,7 +246,7 @@ const NotificationCenter: React.FC = () => {
                   <h5 className="font-bold text-white leading-snug">{n.title}</h5>
                   <p className="text-[10px] text-slate-300 leading-relaxed">{n.message}</p>
                   <span className="text-[8px] text-slate-400 block pt-1 font-semibold">
-                    {new Date(n.created_at).toLocaleString()}
+                    {formatDisplayDateTime(n.created_at)}
                   </span>
                 </div>
                 {/* Action buttons */}

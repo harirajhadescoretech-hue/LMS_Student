@@ -493,16 +493,16 @@ export const StaffManagementTab: React.FC = () => {
               }} autoComplete="off" className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Email Address *</label>
-                  <input name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="off" placeholder="operator@example.com" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="off" placeholder="Enter email address" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">First Name *</label>
-                    <input name="first_name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required autoComplete="off" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <input name="first_name" type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required autoComplete="off" placeholder="Enter first name" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Last Name *</label>
-                    <input name="last_name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required autoComplete="off" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <input name="last_name" type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required autoComplete="off" placeholder="Enter last name" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                 </div>
                 <div>
@@ -514,7 +514,7 @@ export const StaffManagementTab: React.FC = () => {
                       value={password} 
                       onChange={(e) => setPassword(e.target.value)} 
                       autoComplete="new-password" 
-                      placeholder="Defaults to: apex123" 
+                      placeholder="Enter password" 
                       className="w-full h-10 pl-3 pr-10 bg-muted/40 border border-border rounded-xl outline-none" 
                     />
                     <button
@@ -569,16 +569,16 @@ export const StaffManagementTab: React.FC = () => {
               }} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Email Address *</label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Enter email address" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">First Name *</label>
-                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} required placeholder="Enter first name" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                   <div>
                     <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Last Name *</label>
-                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} required placeholder="Enter last name" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                 </div>
                 <div>
@@ -622,6 +622,7 @@ export const StaffManagementTab: React.FC = () => {
                       onChange={(e) => setNewPassword(e.target.value)} 
                       required 
                       autoComplete="new-password" 
+                      placeholder="Enter new password"
                       className="w-full h-10 pl-3 pr-10 bg-muted/40 border border-border rounded-xl outline-none" 
                     />
                     <button

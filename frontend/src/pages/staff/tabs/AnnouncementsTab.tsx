@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Megaphone, Plus, Trash2, X, Send, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
+import { formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface Announcement {
   id: number;
@@ -94,7 +95,7 @@ export const AnnouncementsTab: React.FC = () => {
                 {ann.priority} Priority
               </span>
               <span className="px-2 py-0.5 rounded bg-primary/10 border border-primary/20 text-primary font-bold uppercase tracking-wider">{ann.scope}</span>
-              <span className="flex items-center gap-0.5"><Clock size={10} /> {new Date(ann.created_at).toLocaleString()}</span>
+              <span className="flex items-center gap-0.5"><Clock size={10} /> {formatDisplayDateTime(ann.created_at)}</span>
             </div>
 
             <h3 className="font-extrabold text-sm flex items-center gap-1.5 text-foreground">
@@ -125,7 +126,7 @@ export const AnnouncementsTab: React.FC = () => {
               <form onSubmit={handleCreate} className="space-y-4">
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Alert Title *</label>
-                  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required placeholder="e.g. Schedule Alterations" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required placeholder="Enter alert title" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
@@ -137,17 +138,17 @@ export const AnnouncementsTab: React.FC = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Target Scope Scope</label>
-                    <input type="text" value={scope} onChange={(e) => setScope(e.target.value)} required placeholder="Global / Course Name" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                    <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Target Scope</label>
+                    <input type="text" value={scope} onChange={(e) => setScope(e.target.value)} required placeholder="Enter scope (Global or Course Name)" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Details Content *</label>
-                  <textarea value={content} onChange={(e) => setContent(e.target.value)} required rows={4} placeholder="Describe the notice..." className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
+                  <textarea value={content} onChange={(e) => setContent(e.target.value)} required rows={4} placeholder="Enter announcement message content" className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
                 </div>
                 <button type="submit" className="w-full py-2.5 bg-primary text-primary-foreground font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-primary/10">
                   <Send size={12} />
-                  <span>Broadcast Broadcast</span>
+                  <span>Broadcast Announcement</span>
                 </button>
               </form>
             </motion.div>

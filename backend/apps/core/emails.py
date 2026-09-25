@@ -36,8 +36,58 @@ socket.getaddrinfo = _smtp_ipv4_getaddrinfo
 from django.conf import settings
 # pyrefly: ignore [missing-import]
 from django.core.mail import get_connection
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
+
+
+def format_display_datetime(dt) -> str:
+    """
+    Formats a datetime object into standard 'DD Mon YYYY, hh:mm AM/PM' (e.g. '26 Sep 2026, 10:00 AM')
+    using Indian Standard Time (+05:30 / Asia/Kolkata).
+    """
+    if not dt:
+        return ""
+    try:
+        from zoneinfo import ZoneInfo
+        from django.utils import timezone
+        try:
+            tz = ZoneInfo("Asia/Kolkata")
+        except Exception:
+            tz = timezone.get_current_timezone()
+
+        if timezone.is_aware(dt):
+            local_dt = dt.astimezone(tz)
+        else:
+            local_dt = timezone.make_aware(dt, timezone.utc).astimezone(tz)
+        return local_dt.strftime("%d %b %Y, %I:%M %p")
+    except Exception:
+        return dt.strftime("%d %b %Y, %I:%M %p") if hasattr(dt, 'strftime') else str(dt)
+
+
+def format_display_date(dt) -> str:
+    """
+    Formats a date object into standard 'DD Mon YYYY' (e.g. '26 Sep 2026')
+    using Indian Standard Time (+05:30 / Asia/Kolkata).
+    """
+    if not dt:
+        return ""
+    try:
+        from zoneinfo import ZoneInfo
+        from django.utils import timezone
+        try:
+            tz = ZoneInfo("Asia/Kolkata")
+        except Exception:
+            tz = timezone.get_current_timezone()
+
+        if timezone.is_aware(dt):
+            local_dt = dt.astimezone(tz)
+        else:
+            local_dt = timezone.make_aware(dt, timezone.utc).astimezone(tz)
+        return local_dt.strftime("%d %b %Y")
+    except Exception:
+        return dt.strftime("%d %b %Y") if hasattr(dt, 'strftime') else str(dt)
+
 
 
 # ── Default Templates ──────────────────────────────────────────────────────────
@@ -734,7 +784,7 @@ def _send_live_class_email_thread(live_class_id: int):
             mentor_name = live_class.created_by.email if live_class.created_by else "Your Mentor"
 
         session_title = live_class.title or "Doubt Clearing Session"
-        scheduled_time = live_class.scheduled_time.strftime("%b %d, %Y at %I:%M %p") if live_class.scheduled_time else "Scheduled Time"
+        scheduled_time = format_display_datetime(live_class.scheduled_time) if live_class.scheduled_time else "Scheduled Time"
         meeting_link = getattr(live_class, 'meeting_url', None) or getattr(live_class, 'meeting_link', None) or "Check dashboard for link"
 
         # Normalize {{placeholder}} → {placeholder}
@@ -812,7 +862,7 @@ def _send_course_completion_email_thread(certificate_id: int):
         course_title = cert.course.title if cert.course else "Your Course Track"
         certificate_code = cert.certificate_code or "N/A"
         certificate_url = cert.file_url or "https://lms.hadescoretech.com/student"
-        completion_date = cert.issued_at.strftime("%b %d, %Y") if cert.issued_at else time.strftime("%b %d, %Y")
+        completion_date = format_display_date(cert.issued_at) if cert.issued_at else format_display_date(timezone.now())
 
         base_frontend = getattr(settings, 'FRONTEND_URL', 'https://lms.hadescoretech.com')
         if not base_frontend.endswith('/'):

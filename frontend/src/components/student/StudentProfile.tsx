@@ -90,8 +90,8 @@ const StudentProfile: React.FC = () => {
         transition={{ delay: 0.1 }}
         className="rounded-3xl cyber-glass-card p-6 md:p-8 shadow-sm space-y-5"
       >
-        <h3 className="text-sm font-extrabold text-white border-b border-cyan-500/20 pb-3 flex items-center gap-2">
-          <User className="text-cyan-400" size={16} />
+        <h3 className="text-sm font-extrabold text-slate-900 border-b border-slate-200 pb-3 flex items-center gap-2">
+          <User className="text-cyan-600" size={16} />
           <span>Account Settings & Credentials</span>
         </h3>
 

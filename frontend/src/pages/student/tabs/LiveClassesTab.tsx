@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { Video, Clock, ExternalLink, CalendarDays, PlayCircle, ArrowLeft, Radio, Sparkles, Lock, CheckCircle2, ShieldAlert } from 'lucide-react';
 import CalendarView from '../../../components/student/CalendarView';
 import { UniversalVideoPlayer } from '../../../components/UniversalVideoPlayer';
+import { formatDisplayDate, formatDisplayTime, formatDisplayDateTime } from '../../../utils/dateTimeUtils';
 
 interface LiveClass {
   id: number;
@@ -150,8 +151,8 @@ export const LiveClassesTab: React.FC = () => {
 
         {/* Active & Upcoming Schedules Panel */}
         <div className="space-y-2">
-          <h3 className="font-extrabold text-xs text-white flex items-center gap-1.5">
-            <Radio size={14} className="text-cyan-400" />
+          <h3 className="font-extrabold text-xs text-slate-900 flex items-center gap-1.5">
+            <Radio size={14} className="text-emerald-600" />
             <span>Active & Upcoming Sessions</span>
           </h3>
 
@@ -168,16 +169,16 @@ export const LiveClassesTab: React.FC = () => {
                     <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
                     <span>BROADCASTING NOW</span>
                   </span>
-                  <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
+                  <span className="text-[10px] text-emerald-700 font-bold flex items-center gap-1">
                     <Clock size={10} /> Active
                   </span>
                 </div>
 
                 <div className="space-y-0.5">
-                  <span className="text-[9px] uppercase font-extrabold text-cyan-400 tracking-wider block">{lc.course_title || 'Apex Course'}</span>
-                  <h4 className="font-black text-xs text-white">{lc.title}</h4>
+                  <span className="text-[9px] uppercase font-extrabold text-emerald-700 tracking-wider block">{lc.course_title || 'Apex Course'}</span>
+                  <h4 className="font-black text-xs text-slate-900">{lc.title}</h4>
                   {lc.created_by_name && (
-                    <span className="text-[10px] text-slate-400 font-semibold block">Mentor: {lc.created_by_name}</span>
+                    <span className="text-[10px] text-slate-600 font-semibold block">Mentor: {lc.created_by_name}</span>
                   )}
                 </div>
 
@@ -194,31 +195,36 @@ export const LiveClassesTab: React.FC = () => {
             ))}
 
             {upcomingClasses.map(lc => (
-              <div key={lc.id} className="p-3 rounded-2xl cyber-glass-card shadow-2xs space-y-2 hover:border-cyan-400 transition-all">
-                <div className="space-y-0.5">
-                  <span className="text-[9px] uppercase font-extrabold text-cyan-400 tracking-wider block">{lc.course_title || 'Apex Course'}</span>
-                  <h4 className="font-extrabold text-xs text-white">{lc.title}</h4>
+              <div key={lc.id} className="p-3.5 rounded-2xl cyber-glass-card shadow-2xs space-y-2.5 hover:border-emerald-500/40 transition-all">
+                <div className="space-y-1">
+                  <span className="text-[9px] uppercase font-extrabold text-teal-700 tracking-wider block">{lc.course_title || 'Live Mentoring'}</span>
+                  <h4 className="font-extrabold text-xs text-slate-900 leading-snug">{lc.title}</h4>
                   {lc.created_by_name && (
-                    <span className="text-[10px] text-slate-400 font-semibold block">Mentor: {lc.created_by_name}</span>
+                    <span className="text-[10px] text-slate-600 font-semibold block">Mentor: {lc.created_by_name}</span>
                   )}
-                  <span className="text-[10px] text-slate-400 flex items-center gap-1 font-mono pt-0.5">
-                    <Clock size={10} /> {new Date(lc.scheduled_time).toLocaleString()}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1 text-[10px] font-medium border-t border-slate-200 mt-1.5">
+                    <span className="text-teal-700 flex items-center gap-1 font-semibold">
+                      <CalendarDays size={11} /> {formatDisplayDate(lc.scheduled_time)}
+                    </span>
+                    <span className="text-emerald-700 flex items-center gap-1 font-semibold">
+                      <Clock size={11} /> {formatDisplayTime(lc.scheduled_time)}
+                    </span>
+                  </div>
                 </div>
                 <a
                   href={lc.meeting_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full py-1 bg-slate-900/80 hover:bg-cyan-600 hover:text-white text-slate-200 font-bold rounded-lg text-center flex items-center justify-center gap-1.5 transition-all text-[11px] border border-cyan-500/30"
+                  className="w-full py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-center flex items-center justify-center gap-1.5 transition-all text-xs"
                 >
                   <span>Room Details</span>
-                  <ExternalLink size={11} />
+                  <ExternalLink size={12} />
                 </a>
               </div>
             ))}
 
             {upcomingClasses.length === 0 && activeLive.length === 0 && (
-              <div className="py-8 text-center text-slate-400 border border-dashed border-slate-700/60 rounded-2xl cyber-glass-card font-medium p-4 text-[11px]">
+              <div className="py-8 text-center text-slate-500 border border-dashed border-slate-300 rounded-2xl cyber-glass-card font-medium p-4 text-[11px]">
                 No upcoming doubt sessions scheduled right now.
               </div>
             )}
@@ -227,35 +233,35 @@ export const LiveClassesTab: React.FC = () => {
       </div>
 
       {/* ── CLASS RECORDINGS & VIDEO REPLAYS (Compact Grid) ──────────── */}
-      <div className="space-y-2 pt-1 border-t border-cyan-500/20">
+      <div className="space-y-2 pt-1 border-t border-emerald-500/20">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-extrabold text-xs text-white flex items-center gap-1.5">
-              <PlayCircle size={14} className="text-cyan-400" />
+            <h3 className="font-extrabold text-xs text-slate-900 flex items-center gap-1.5">
+              <PlayCircle size={14} className="text-emerald-600" />
               <span>Class Recordings & Video Replays</span>
             </h3>
-            <p className="text-slate-400 text-[10px]">Watch mentor session replays and doubt resolutions anytime.</p>
+            <p className="text-slate-600 text-[10px]">Watch mentor session replays and doubt resolutions anytime.</p>
           </div>
-          <span className="text-[10px] font-bold text-cyan-400">{pastClasses.length} Replays</span>
+          <span className="text-[10px] font-bold text-emerald-700">{pastClasses.length} Replays</span>
         </div>
 
         <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
           {pastClasses.map(lc => {
             const hasViewed = Boolean(lc.has_viewed_recording);
             return (
-              <div key={lc.id} className="p-3 rounded-2xl cyber-glass-card hover:border-cyan-400 transition-all flex flex-col justify-between gap-2 shadow-2xs">
+              <div key={lc.id} className="p-3 rounded-2xl cyber-glass-card hover:border-emerald-500/40 transition-all flex flex-col justify-between gap-2 shadow-2xs">
                 <div className="space-y-0.5">
                   <div className="flex items-center justify-between gap-1">
-                    <span className="text-[8px] uppercase font-black text-cyan-400 tracking-wider block">{lc.course_title || 'Apex Course'}</span>
+                    <span className="text-[8px] uppercase font-black text-teal-700 tracking-wider block">{lc.course_title || 'Apex Course'}</span>
                     {hasViewed && (
                       <span className="px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-wider bg-destructive/10 text-destructive border border-destructive/20 flex items-center gap-0.5">
                         <Lock size={8} /> Expired
                       </span>
                     )}
                   </div>
-                  <h4 className="font-extrabold text-xs text-white truncate">{lc.title}</h4>
-                  <span className="text-[9px] text-slate-400 flex items-center gap-1 font-mono">
-                    <Clock size={9} /> {new Date(lc.scheduled_time).toLocaleDateString()}
+                  <h4 className="font-extrabold text-xs text-slate-900 truncate">{lc.title}</h4>
+                  <span className="text-[9px] text-slate-500 flex items-center gap-1 font-mono">
+                    <Clock size={9} /> {formatDisplayDateTime(lc.scheduled_time)}
                   </span>
                 </div>
                 
@@ -263,7 +269,7 @@ export const LiveClassesTab: React.FC = () => {
                   hasViewed ? (
                     <button 
                       disabled
-                      className="w-full py-1.5 rounded-xl bg-muted/40 text-muted-foreground font-bold text-[10px] flex items-center justify-center gap-1.5 opacity-60 cursor-not-allowed border border-border"
+                      className="w-full py-1.5 rounded-xl bg-slate-100 text-slate-400 font-bold text-[10px] flex items-center justify-center gap-1.5 opacity-60 cursor-not-allowed border border-slate-200"
                       title="You have already viewed this session (Single-use playback policy)."
                     >
                       <Lock size={11} />
@@ -272,14 +278,14 @@ export const LiveClassesTab: React.FC = () => {
                   ) : (
                     <button 
                       onClick={() => handleWatchPlayback(lc)}
-                      className="w-full py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-extrabold text-[11px] flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(6,182,212,0.3)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                      className="w-full py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-[11px] flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.3)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
                     >
                       <PlayCircle size={13} />
                       <span>Watch Playback (1 View)</span>
                     </button>
                   )
                 ) : (
-                  <span className="w-full py-1 text-center rounded-lg border border-slate-700/60 bg-slate-900/60 text-slate-400 font-bold text-[9px]">
+                  <span className="w-full py-1 text-center rounded-lg border border-slate-200 bg-slate-100 text-slate-600 font-bold text-[9px]">
                     Processing Replay
                   </span>
                 )}

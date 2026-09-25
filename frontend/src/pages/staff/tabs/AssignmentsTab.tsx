@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { downloadFileDirectly } from '../../../utils/downloadHelper';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toLocalDatetimeInput, toUtcIsoString, formatDisplayDate } from '../../../utils/dateTimeUtils';
 
 interface Submission {
   id: number;
@@ -180,7 +181,7 @@ export const AssignmentsTab: React.FC = () => {
         title: assignTitle,
         description: assignDesc,
         module: Number(selectedModuleId),
-        due_date: assignDueDate || undefined,
+        due_date: assignDueDate ? toUtcIsoString(assignDueDate) : undefined,
         file_attachment: assignFileUrl || undefined
       };
       if (editingAssignment) {
@@ -252,7 +253,7 @@ export const AssignmentsTab: React.FC = () => {
     setEditingAssignment(assign);
     setAssignTitle(assign.title);
     setAssignDesc(assign.description);
-    setAssignDueDate(assign.due_date ? assign.due_date.slice(0, 16) : '');
+    setAssignDueDate(toLocalDatetimeInput(assign.due_date));
     setAssignFileUrl(assign.file_attachment || '');
     setSelectedModuleId(String(assign.module));
 
@@ -550,7 +551,7 @@ export const AssignmentsTab: React.FC = () => {
                         </div>
                       </td>
                       <td className="py-3.5 px-4 font-semibold text-foreground/75 font-mono">
-                        {assign.due_date ? new Date(assign.due_date).toLocaleDateString() : 'No Limit'}
+                        {assign.due_date ? formatDisplayDate(assign.due_date) : 'No Limit'}
                       </td>
                       <td className="py-3.5 px-4">
                         {assign.file_attachment ? (
@@ -711,11 +712,12 @@ export const AssignmentsTab: React.FC = () => {
 
                 {gradeAction === 'grade' && (
                   <div>
-                    <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Awarded Grade / Score (e.g. A+, 95/100) *</label>
+                    <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Awarded Grade / Score *</label>
                     <input 
                       type="text" 
                       value={gradeInput} 
                       onChange={(e) => setGradeInput(e.target.value)} 
+                      placeholder="Enter awarded grade or score"
                       required 
                       className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" 
                     />
@@ -727,6 +729,7 @@ export const AssignmentsTab: React.FC = () => {
                   <textarea 
                     value={feedbackInput} 
                     onChange={(e) => setFeedbackInput(e.target.value)} 
+                    placeholder="Enter feedback remarks"
                     rows={4} 
                     className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" 
                   />
@@ -788,11 +791,11 @@ export const AssignmentsTab: React.FC = () => {
 
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Assignment Title *</label>
-                  <input type="text" value={assignTitle} onChange={(e) => setAssignTitle(e.target.value)} required className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
+                  <input type="text" value={assignTitle} onChange={(e) => setAssignTitle(e.target.value)} required placeholder="Enter assignment title" className="w-full h-10 px-3 bg-muted/40 border border-border rounded-xl outline-none" />
                 </div>
                 <div>
                   <label className="block text-[10px] text-muted-foreground uppercase mb-1 font-bold">Guidelines / Rubrics Instructions *</label>
-                  <textarea value={assignDesc} onChange={(e) => setAssignDesc(e.target.value)} required rows={4} className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
+                  <textarea value={assignDesc} onChange={(e) => setAssignDesc(e.target.value)} required rows={4} placeholder="Enter guidelines or rubrics instructions" className="w-full p-3 bg-muted/40 border border-border rounded-xl outline-none resize-none" />
                 </div>
 
                 <div>

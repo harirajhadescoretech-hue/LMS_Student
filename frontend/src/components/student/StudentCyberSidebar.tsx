@@ -96,37 +96,40 @@ export const StudentCyberSidebar: React.FC<StudentCyberSidebarProps> = ({ isOpen
         />
       )}
 
-      {/* Cyber-Glass Sidebar Container (Menu Bar stays dark) */}
+      {/* Cyber-Glass Sidebar Container (Sample UI Mockup Theme) */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-64 lg:w-72 m-0 lg:m-3 h-full lg:h-[calc(100vh-1.5rem)] rounded-none lg:rounded-3xl cyber-glass-sidebar dark text-slate-100 p-4 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-64 lg:w-72 m-0 lg:m-3 h-full lg:h-[calc(100vh-1.5rem)] rounded-none lg:rounded-3xl cyber-glass-sidebar text-slate-100 p-4 flex flex-col transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         <div className="flex-1 space-y-4">
-          {/* ── TOP CENTERED LOGO & BRANDING ── */}
-          <div className="relative flex flex-col items-center justify-center text-center pt-2 pb-2">
+          {/* ── TOP HORIZONTAL BRANDING ── */}
+          <div className="relative flex items-center gap-3 pt-2 pb-3 px-1 border-b border-teal-900/40">
             {/* Mobile close button */}
             <button 
               onClick={onClose}
-              className="lg:hidden absolute top-0 right-0 text-slate-400 hover:text-white p-1"
+              className="lg:hidden absolute top-0 right-0 text-teal-300 hover:text-white p-1"
             >
               <X size={18} />
             </button>
 
             {/* Logo Emblem */}
-            <div className="relative flex items-center justify-center h-20 w-20 mb-2">
+            <div className="p-1 rounded-xl bg-white/10 border border-teal-400/20 shadow-sm shrink-0">
               <img 
                 src="/logo.png?v=3" 
                 alt="Hadescore Logo" 
-                className="h-16 w-16 object-contain drop-shadow-[0_0_14px_rgba(6,182,212,0.6)] relative z-10 hover:scale-105 transition-transform"
+                className="h-8 w-8 object-contain drop-shadow-[0_0_10px_rgba(6,182,212,0.4)]"
               />
             </div>
 
             {/* Brand Typography */}
-            <div className="pt-0.5">
+            <div>
               <h2 className="font-display font-black text-sm tracking-wider uppercase text-white leading-tight">
                 HADESCORE
               </h2>
+              <p className="text-[10px] font-semibold text-teal-300/80 tracking-wide mt-0.5">
+                Learn • Build • Grow
+              </p>
             </div>
           </div>
 
@@ -142,10 +145,10 @@ export const StudentCyberSidebar: React.FC<StudentCyberSidebarProps> = ({ isOpen
                   onClick={() => onClose()}
                   onMouseEnter={() => handlePrefetch(item.path)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all duration-200 group ${
+                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 group ${
                       isActive
-                        ? 'cyber-active-nav font-extrabold text-emerald-300'
-                        : 'text-slate-300 hover:text-white hover:bg-slate-800/60 hover:border hover:border-slate-700/60'
+                        ? 'bg-[#1b7b7c] text-white font-bold shadow-md shadow-teal-950/40'
+                        : 'text-[#a8cbcf] hover:text-white hover:bg-white/10'
                     }`
                   }
                 >
@@ -153,14 +156,11 @@ export const StudentCyberSidebar: React.FC<StudentCyberSidebarProps> = ({ isOpen
                     <>
                       <Icon 
                         size={17} 
-                        className={`transition-transform duration-200 group-hover:scale-110 ${
-                          isActive ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'text-slate-400'
+                        className={`transition-transform duration-200 group-hover:scale-105 ${
+                          isActive ? 'text-white' : 'text-[#80a9af] group-hover:text-white'
                         }`} 
                       />
                       <span className="flex-1 tracking-wide">{item.label}</span>
-                      {isActive && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-                      )}
                     </>
                   )}
                 </NavLink>
@@ -170,14 +170,14 @@ export const StudentCyberSidebar: React.FC<StudentCyberSidebarProps> = ({ isOpen
         </div>
 
         {/* Logout Button */}
-        <div className="mt-auto pt-4 border-t border-slate-800/80">
+        <div className="mt-auto pt-3 border-t border-teal-900/40">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold w-full text-slate-300 hover:text-white hover:bg-red-500/20 hover:border hover:border-red-500/40 transition-all duration-200 group"
+            className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-xs font-bold text-[#a8cbcf] hover:text-white hover:bg-red-500/20 transition-all active:scale-95 w-full"
           >
             <LogOut 
-              size={17} 
-              className="text-slate-400 group-hover:text-red-400 transition-colors duration-200" 
+              size={16} 
+              className="text-[#80a9af] group-hover:text-red-400 transition-colors duration-200" 
             />
             <span className="flex-1 tracking-wide text-left">Logout</span>
           </button>

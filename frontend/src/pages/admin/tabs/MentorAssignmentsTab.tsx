@@ -8,6 +8,7 @@ import {
   UserCheck, UserX, RefreshCw, Mail, Calendar,
   Layers, ArrowUpRight, AlertCircle, Loader2
 } from 'lucide-react';
+import { formatDisplayDate } from '../../../utils/dateTimeUtils';
 
 interface Student {
   id: number;
@@ -132,7 +133,7 @@ export const MentorAssignmentsTab: React.FC = () => {
           <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Search mentors or students..."
+            placeholder="Enter mentor or student name to search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full h-10 pl-10 pr-4 bg-white border border-slate-200 rounded-xl outline-none text-sm text-slate-700 placeholder:text-slate-400 focus:border-blue-300 focus:ring-4 focus:ring-blue-100/40 transition-all"
@@ -184,12 +185,12 @@ export const MentorAssignmentsTab: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 text-[11px] text-slate-400">
+                    <div className="flex items-center gap-3 text-[11px] text-slate-500">
                       <span className="flex items-center gap-1">
                         <Mail size={10} />
                         {mentor.email}
                       </span>
-                      <span className="flex items-center gap-1 font-semibold text-slate-500">
+                      <span className="flex items-center gap-1 font-semibold text-slate-600">
                         <Users size={10} />
                         {mentor.student_count} student{mentor.student_count !== 1 ? 's' : ''}
                       </span>
@@ -217,8 +218,8 @@ export const MentorAssignmentsTab: React.FC = () => {
               {isExpanded && (
                 <div className="border-t border-slate-100">
                   {mentor.students.length === 0 ? (
-                    <div className="py-8 text-center text-slate-400 text-xs">
-                      <UserX size={20} className="mx-auto mb-2 text-slate-300" />
+                    <div className="py-8 text-center text-slate-500 text-xs">
+                      <UserX size={20} className="mx-auto mb-2 text-slate-400" />
                       <p>No students assigned to this mentor.</p>
                     </div>
                   ) : (
@@ -226,12 +227,12 @@ export const MentorAssignmentsTab: React.FC = () => {
                       <table className="w-full text-left text-xs">
                         <thead>
                           <tr className="border-b border-slate-100 bg-slate-50/50">
-                            <th className="py-3 px-6 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Student</th>
-                            <th className="py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Email</th>
-                            <th className="py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Type / Mentorship</th>
-                            <th className="py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Categories</th>
-                            <th className="py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Duration</th>
-                            <th className="py-3 px-4 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Status</th>
+                            <th className="py-3 px-6 text-[10px] font-bold text-slate-600 uppercase tracking-wider">Student</th>
+                            <th className="py-3 px-4 text-[10px] font-bold text-slate-600 uppercase tracking-wider">Email</th>
+                            <th className="py-3 px-4 text-[10px] font-bold text-slate-600 uppercase tracking-wider">Type / Mentorship</th>
+                            <th className="py-3 px-4 text-[10px] font-bold text-slate-600 uppercase tracking-wider">Categories</th>
+                            <th className="py-3 px-4 text-[10px] font-bold text-slate-600 uppercase tracking-wider">Duration</th>
+                            <th className="py-3 px-4 text-[10px] font-bold text-slate-600 uppercase tracking-wider text-center">Status</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -281,9 +282,9 @@ export const MentorAssignmentsTab: React.FC = () => {
                                     {student.start_date && student.end_date ? (
                                       <div className="flex items-center gap-1 text-[10px]">
                                         <Calendar size={10} className="text-slate-400" />
-                                        <span>{new Date(student.start_date).toLocaleDateString()}</span>
+                                        <span>{formatDisplayDate(student.start_date)}</span>
                                         <ArrowUpRight size={8} className="text-slate-300" />
-                                        <span>{new Date(student.end_date).toLocaleDateString()}</span>
+                                        <span>{formatDisplayDate(student.end_date)}</span>
                                       </div>
                                     ) : (
                                       <span className="text-slate-400 text-[10px]">—</span>
@@ -375,9 +376,9 @@ export const MentorAssignmentsTab: React.FC = () => {
                           {student.start_date && student.end_date ? (
                             <div className="flex items-center gap-1 text-[10px]">
                               <Calendar size={10} className="text-slate-400" />
-                              <span>{new Date(student.start_date).toLocaleDateString()}</span>
+                              <span>{formatDisplayDate(student.start_date)}</span>
                               <ArrowUpRight size={8} className="text-slate-300" />
-                              <span>{new Date(student.end_date).toLocaleDateString()}</span>
+                              <span>{formatDisplayDate(student.end_date)}</span>
                             </div>
                           ) : (
                             <span className="text-slate-400 text-[10px]">—</span>
