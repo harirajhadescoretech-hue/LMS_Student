@@ -258,7 +258,7 @@ _default_cors_origins = [
     "https://apex-lms.hadescore.com",
     "https://www.apex-lms.hadescore.com",
     "https://lms-production-0ace.up.railway.app",
-    "https://lms-nv6s.onrender.com",
+    "https://lms-student-v2lg.onrender.com",
     # Local development
     "http://localhost:5173",
     "http://localhost:5174",
@@ -311,7 +311,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://apex-lms.hadescore.com",
     "https://www.apex-lms.hadescore.com",
     "https://lms-production-0ace.up.railway.app",
-    "https://lms-nv6s.onrender.com",
+    "https://lms-student-v2lg.onrender.com",
 ]
 
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://lms.hadescoretech.com')

@@ -325,8 +325,8 @@ export const EmailTemplatesTab: React.FC = () => {
         .replace(/\{\{\s*course_title\s*\}\}/g, 'Full Stack Web Development')
         .replace(/\{\{\s*course_name\s*\}\}/g, 'Full Stack Web Development')
         .replace(/\{\{\s*certificate_code\s*\}\}/g, 'HA-APEX-100892')
-        .replace(/\{\{\s*certificate_url\s*\}\}/g, 'https://lms-nv6s.onrender.com/media/certificates/HA-APEX-100892.pdf')
-        .replace(/\{\{\s*download_url\s*\}\}/g, 'https://lms-nv6s.onrender.com/media/certificates/HA-APEX-100892.pdf')
+        .replace(/\{\{\s*certificate_url\s*\}\}/g, 'https://lms-student-v2lg.onrender.com/media/certificates/HA-APEX-100892.pdf')
+        .replace(/\{\{\s*download_url\s*\}\}/g, 'https://lms-student-v2lg.onrender.com/media/certificates/HA-APEX-100892.pdf')
         .replace(/\{\{\s*completion_date\s*\}\}/g, 'Aug 10, 2026')
     : activeRole === 'LIVE_STUDENT'
     ? body
