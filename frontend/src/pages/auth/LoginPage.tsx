@@ -60,6 +60,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ role, mode }) => {
     }
   }, [mode]);
 
+  // Pre-warm backend on page load so Render cold start completes while typing credentials
+  useEffect(() => {
+    try {
+      const pingUrl = api.defaults.baseURL ? `${api.defaults.baseURL.replace(/\/api\/$/, '')}/` : '/';
+      fetch(pingUrl, { method: 'GET', mode: 'no-cors', cache: 'no-cache' }).catch(() => {});
+    } catch (_) {}
+  }, []);
+
   const currentRole = role || (
     location.pathname.startsWith('/admin') ? 'SUPER_ADMIN' :
     location.pathname.startsWith('/staff') ? 'STAFF' : 'STUDENT'

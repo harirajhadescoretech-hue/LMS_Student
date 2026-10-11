@@ -17,16 +17,22 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             user.save(update_fields=['session_id'])
 
         token = super().get_token(user)
-        # Append role, session_id and user details to JWT payload
         token['email'] = user.email
         token['role'] = user.role
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name
         token['session_id'] = getattr(user, 'session_id', '') or ''
-        if user.role == 'STUDENT' and hasattr(user, 'student_profile'):
-            token['courses'] = [c.title for c in user.student_profile.courses.all()]
-        else:
-            token['courses'] = []
+        
+        # Fast query for courses only when role is STUDENT
+        courses_list = getattr(user, '_cached_courses', None)
+        if courses_list is None:
+            if user.role == 'STUDENT' and hasattr(user, 'student_profile'):
+                courses_list = list(user.student_profile.courses.values_list('title', flat=True))
+            else:
+                courses_list = []
+            user._cached_courses = courses_list
+
+        token['courses'] = courses_list
         return token
 
     def validate(self, attrs):
@@ -66,12 +72,10 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                         f"Your Course Access has Expired (allotted {profile.course_duration} days ended on {profile.end_date}). Please contact your administrator to extend your access."
                     )
                 else:
-                    # Valid future end_date: ensure account is active
                     if not user.is_active:
                         user.is_active = True
                         user.save(update_fields=['is_active'])
             else:
-                # No end_date set: ensure account is active
                 if not user.is_active:
                     user.is_active = True
                     user.save(update_fields=['is_active'])
@@ -80,31 +84,37 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if not user.is_active:
             raise exceptions.AuthenticationFailed("This account is inactive. Please contact system administrator.")
         
-        # Log login history details
-        from apps.users.models import LoginHistory
+        # Async non-blocking LoginHistory recording so DB write doesn't delay login response
+        import threading
         request = self.context.get('request')
-        ip = None
-        ua = None
-        if request:
-            ip = request.META.get('REMOTE_ADDR')
-            ua = request.META.get('HTTP_USER_AGENT')
-        LoginHistory.objects.create(user=self.user, ip_address=ip, user_agent=ua)
+        ip = request.META.get('REMOTE_ADDR') if request else None
+        ua = request.META.get('HTTP_USER_AGENT') if request else None
+
+        def _log_login_async(u_id, ip_addr, user_agent):
+            from django.db import connections
+            connections.close_all()
+            try:
+                from apps.users.models import LoginHistory
+                LoginHistory.objects.create(user_id=u_id, ip_address=ip_addr, user_agent=user_agent)
+            except Exception:
+                pass
+        
+        threading.Thread(target=_log_login_async, args=(user.id, ip, ua), daemon=True).start()
         
         # Single Active Device Session Protection & Root Email Security Alerts
         prev_session = getattr(user, '_prev_session_id', None)
         full_name = f"{self.user.first_name} {self.user.last_name}".strip()
 
         if prev_session and user.role == 'STUDENT':
-            import threading
-            from apps.core.emails import send_lms_email
-            ip_addr = ip or 'Unknown IP'
             user_email = user.email
             user_name = full_name or user.email
+            ip_addr = ip or 'Unknown IP'
             
             def _send_concurrent_alert():
                 from django.db import connections
                 connections.close_all()
                 try:
+                    from apps.core.emails import send_lms_email
                     send_lms_email(
                         to_email='hadescore.apex.technologies@gmail.com',
                         subject=f"⚠️ Security Alert: Concurrent Login Detected for {user_email}",
@@ -123,10 +133,9 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             
             threading.Thread(target=_send_concurrent_alert, daemon=True).start()
 
-        courses_list = []
+        courses_list = getattr(user, '_cached_courses', [])
         student_type = None
         if self.user.role == 'STUDENT' and hasattr(self.user, 'student_profile'):
-            courses_list = [c.title for c in self.user.student_profile.courses.all()]
             student_type = self.user.student_profile.student_type
 
         # Append user metadata directly in the API response json
