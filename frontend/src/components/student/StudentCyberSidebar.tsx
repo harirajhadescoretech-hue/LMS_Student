@@ -114,11 +114,11 @@ export const StudentCyberSidebar: React.FC<StudentCyberSidebarProps> = ({ isOpen
             </button>
 
             {/* Logo Emblem */}
-            <div className="p-1 rounded-xl bg-white/10 border border-teal-400/20 shadow-sm shrink-0">
+            <div className="p-1 rounded-xl bg-white/10 border border-white/20 shadow-sm shrink-0">
               <img 
-                src="/logo.png?v=3" 
+                src="/logo.png?v=4" 
                 alt="Hadescore Logo" 
-                className="h-8 w-8 object-contain drop-shadow-[0_0_10px_rgba(6,182,212,0.4)]"
+                className="h-8 w-8 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.25)]"
               />
             </div>
 

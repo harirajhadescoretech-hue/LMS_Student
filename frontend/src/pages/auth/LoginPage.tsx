@@ -322,9 +322,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ role, mode }) => {
             <div className="flex items-center gap-3 mb-3">
               <div className="p-1.5 rounded-xl bg-white/80 shadow-sm border border-slate-200/60 backdrop-blur-md">
                 <img
-                  src="/logo.png?v=3"
+                  src="/logo.png?v=4"
                   alt="Hadescore Logo"
-                  className="h-8 w-8 sm:h-9 sm:w-9 object-contain drop-shadow-[0_2px_6px_rgba(6,182,212,0.3)]"
+                  className="h-8 w-8 sm:h-9 sm:w-9 object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.12)]"
                 />
               </div>
               <div>
@@ -429,9 +429,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ role, mode }) => {
             <div className="text-center mb-4 pt-1">
               <div className="inline-block p-1.5 rounded-xl bg-slate-50 border border-slate-100 shadow-sm mb-2">
                 <img
-                  src="/logo.png?v=3"
+                  src="/logo.png?v=4"
                   alt="Hadescore"
-                  className="h-9 w-9 object-contain drop-shadow-[0_2px_6px_rgba(6,182,212,0.22)] mx-auto"
+                  className="h-10 w-10 sm:h-11 sm:w-11 object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.12)] mx-auto"
                 />
               </div>
               <h3 className="text-base font-black tracking-[0.18em] uppercase text-slate-800 leading-none">
