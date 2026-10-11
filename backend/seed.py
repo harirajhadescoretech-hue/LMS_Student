@@ -1,5 +1,5 @@
 import os
-# pyrefly: ignore [missing-import]
+# pyrefly: ignore [missing-import, untyped-import]
 import django
 
 # Set Django environment settings
@@ -13,7 +13,7 @@ from apps.modules.models import Module
 from apps.lessons.models import Lesson
 from apps.quizzes.models import Quiz, Question
 from apps.assignments.models import Assignment
-# pyrefly: ignore [missing-import]
+# pyrefly: ignore [missing-import, untyped-import]
 from django.utils import timezone
 from datetime import timedelta
 
@@ -45,20 +45,20 @@ def seed():
     cat_objs = {}
     for cat_name in categories:
         slug = cat_name.lower().replace(' ', '-')
-        cat, created = Category.objects.get_or_create(
-            name=cat_name,
-            defaults={'slug': slug}
-        )
+        cat = Category.objects.filter(slug=slug).first() or Category.objects.filter(name__iexact=cat_name).first()
+        if not cat:
+            cat = Category.objects.create(name=cat_name, slug=slug)
         cat_objs[cat_name] = cat
     print(f"Categories seeded: {list(cat_objs.keys())}")
 
     # 5. Create a course in AI
+    ai_cat = cat_objs.get('AI') or Category.objects.first()
     course, created = Course.objects.get_or_create(
         slug='introduction-to-ai',
         defaults={
             'title': 'Introduction to Artificial Intelligence',
             'description': 'Learn the core concepts of Machine Learning, Deep Learning, and Neural Networks from scratch.',
-            'category': cat_objs['AI'],
+            'category': ai_cat,
             'is_published': True
         }
     )

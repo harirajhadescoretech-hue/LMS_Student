@@ -2,7 +2,7 @@
 from rest_framework import viewsets, decorators, response, status
 # pyrefly: ignore [missing-import]
 from rest_framework.permissions import IsAuthenticated
-# pyrefly: ignore [missing-import]
+# pyrefly: ignore [missing-import, untyped-import]
 from django.db.models import Prefetch
 from apps.lessons.models import Lesson, LessonBookmark, LessonNote, LessonProgress
 from apps.lessons.serializers import LessonSerializer, LessonBookmarkSerializer, LessonNoteSerializer
@@ -49,7 +49,7 @@ class LessonViewSet(viewsets.ModelViewSet):
             
             qs = qs.filter(module__course__is_published=True)
             if student_courses or staff_cat or staff:
-                # pyrefly: ignore [missing-import]
+                # pyrefly: ignore [missing-import, untyped-import]
                 from django.db.models import Q
                 filters = Q(module__course__is_mentoring_track=True)
                 if student_courses:
@@ -60,6 +60,7 @@ class LessonViewSet(viewsets.ModelViewSet):
                     filters |= Q(module__course__mentor=staff) | Q(module__course__created_by=staff)
                 qs = qs.filter(filters).distinct()
         elif user.role == 'STAFF':
+            # pyrefly: ignore [untyped-import]
             from django.db.models import Q as DQ
             category = getattr(user, 'staff_profile', None) and user.staff_profile.category
             # Allow staff to see lessons for courses in their category,
@@ -88,7 +89,7 @@ class LessonViewSet(viewsets.ModelViewSet):
         watch_time = request.data.get('watch_time', 0)
         
         from apps.lessons.models import LessonProgress as LP
-        # pyrefly: ignore [missing-import]
+        # pyrefly: ignore [missing-import, untyped-import]
         from django.utils import timezone
         
         # If the lesson progress was already completed, keep it completed
